@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.taskonaut.db
+Bundle-SymbolicName: org.taskonaut.db
+Bundle-Version: 1.0.1.qualifier
+Bundle-Activator: org.taskonaut.db.internal.Activator
+Bundle-Vendor: Prolubnikov Dmitry
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.amazon.carbonado,
+ com.amazon.carbonado.repo.sleepycat,
+ com.amazon.carbonado.spi,
+ org.osgi.framework;version="1.3.0",
+ org.taskonaut.tasks
+Bundle-ActivationPolicy: lazy
