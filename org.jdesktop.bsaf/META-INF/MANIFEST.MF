@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.jdesktop.bsaf
+Bundle-SymbolicName: org.jdesktop.bsaf
+Bundle-Version: 1.9.0.RC4
+Bundle-ClassPath: bsaf-1.9RC4.jar
+Bundle-Vendor: http://kenai.com/projects/bsaf
+Export-Package: org.jdesktop.application,
+ org.jdesktop.application.session,
+ org.jdesktop.application.utils
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: javax.swing.text,
+ javax.swing.table,
+ javax.swing.border,
+ javax.swing,
+ javax.swing.event,
+ javax.swing.plaf
