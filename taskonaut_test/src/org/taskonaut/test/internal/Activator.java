@@ -18,6 +18,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+		System.out.println("Start test bundle");
 		Application.launch(BlockingExample1.class, new String[]{});
 	}
 
@@ -27,6 +28,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
+		System.out.println("Stop test bundle");
 	}
 
 }
