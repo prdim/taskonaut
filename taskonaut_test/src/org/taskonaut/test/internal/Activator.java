@@ -19,7 +19,8 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		System.out.println("Start test bundle");
-		Application.launch(BlockingExample1.class, new String[]{});
+//		Application.launch(BlockingExample1.class, new String[]{});
+		Application.launch(AppTest.class, new String[]{});
 	}
 
 	/*
