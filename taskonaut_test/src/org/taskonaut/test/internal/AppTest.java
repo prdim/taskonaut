@@ -14,7 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 
+import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
+import org.jdesktop.application.Task;
 
 /**
  * @author spec
@@ -72,5 +75,28 @@ public class AppTest extends SingleFrameApplication {
 		panel.setBorder(new EmptyBorder(0, 2, 2, 2)); // top, left, bottom, right
 		panel.setPreferredSize(new Dimension(640, 480));
 		return panel;
+	}
+	
+	public boolean isNextImageEnabled() {
+		return true;
+	}
+	
+	@Action(enabledProperty = "nextImageEnabled")
+	public Task previousImage() {
+		return new TestTask(this);
+	}
+	
+	private class TestTask extends Task<Object, Void> {
+
+		public TestTask(Application app) {
+			super(app);
+			// TODO Auto-generated constructor stub
+		}
+		
+		@Override
+		protected Object doInBackground() throws Exception {
+			System.out.println("Task started!");
+			return null;
+		}
 	}
 }
