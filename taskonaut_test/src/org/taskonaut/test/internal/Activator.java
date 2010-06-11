@@ -7,6 +7,7 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
 	private static BundleContext context;
+	private MenuTracker tracker;
 
 	static BundleContext getContext() {
 		return context;
@@ -19,6 +20,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		System.out.println("Start test bundle");
+		tracker = new MenuTracker(bundleContext);
 //		Application.launch(BlockingExample1.class, new String[]{});
 		Application.launch(AppTest.class, new String[]{});
 	}

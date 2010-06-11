@@ -11,5 +11,5 @@ import javax.swing.Action;
  *
  */
 public interface IMenuAction {
-	public Action getAction();
+	public String getActionName();
 }

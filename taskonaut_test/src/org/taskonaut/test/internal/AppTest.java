@@ -30,7 +30,10 @@ public class AppTest extends SingleFrameApplication {
 	protected void startup() {
 		getMainFrame().setJMenuBar(createMenuBar());
 		show(createMainPanel());
-		
+	}
+	
+	public void updateActions() {
+		getMainFrame().setJMenuBar(createMenuBar());
 	}
 
 	private JMenu createMenu(String menuName, String[] actionNames) {
@@ -45,6 +48,16 @@ public class AppTest extends SingleFrameApplication {
 				menuItem.setIcon(null);
 				menu.add(menuItem);
 			}
+		}
+		JMenuItem menuItem = new JMenuItem();
+		menuItem.setAction(getContext().getActionMap(new TestActionInt()).get("testAction2"));
+		menuItem.setIcon(null);
+		menu.add(menuItem);
+		if(MenuTracker.menu!=null) {
+			menuItem = new JMenuItem();
+			menuItem.setAction(getContext().getActionMap(MenuTracker.menu).get(MenuTracker.menu.getActionName()));
+			menuItem.setIcon(null);
+			menu.add(menuItem);
 		}
 		return menu;
 	}
