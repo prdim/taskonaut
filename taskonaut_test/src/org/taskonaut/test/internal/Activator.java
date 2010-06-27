@@ -22,7 +22,7 @@ public class Activator implements BundleActivator {
 		System.out.println("Start test bundle");
 		tracker = new MenuTracker(bundleContext);
 //		Application.launch(BlockingExample1.class, new String[]{});
-		Application.launch(AppTest.class, new String[]{});
+//		Application.launch(AppTest.class, new String[]{});
 	}
 
 	/*

@@ -25,7 +25,8 @@ public class MenuTracker extends ServiceTracker implements ServiceTrackerCustomi
 	public Object addingService(ServiceReference reference) {
 		menu = (IMenuAction)context.getService(reference);
 		System.out.println("Register " + menu.getActionName());
-		((AppTest)AppTest.getInstance()).updateActions();
+		if(AppTest.isInit)
+			((AppTest)AppTest.getInstance()).updateActions();
 		return menu;
 	}
 

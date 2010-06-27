@@ -25,11 +25,13 @@ import org.jdesktop.application.Task;
  */
 public class AppTest extends SingleFrameApplication {
 	private StatusBar statusBar;
+	public static boolean isInit = false;
 
 	@Override
 	protected void startup() {
 		getMainFrame().setJMenuBar(createMenuBar());
 		show(createMainPanel());
+		isInit = true;
 	}
 	
 	public void updateActions() {
