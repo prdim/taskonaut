@@ -21,4 +21,16 @@ public class TestActions implements IMenuAction {
 	public String getActionName() {
 		return "testAction1";
 	}
+
+	@Override
+	public String getMenu() {
+		return "fileMenu";
+	}
+
+	@Override
+	public int getPriority() {
+		return 100;
+	}
+	
+	
 }

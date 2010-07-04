@@ -7,12 +7,15 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.jdesktop.application.Action;
 import org.jdesktop.application.SingleFrameApplication;
 import org.taskonaut.app.StatusBar;
 import org.taskonaut.app.MDIDesktopPane;
@@ -24,6 +27,13 @@ import org.taskonaut.app.MDIDesktopPane;
 public class MainApplication extends SingleFrameApplication {
 	private StatusBar statusBar;
 	public static boolean isInit = false;
+	private JDialog aboutBox;
+	private JMenu fileMenu = new JMenu();
+	private JMenu taskMenu = new JMenu();
+	private JMenu reportMenu = new JMenu();
+	private JMenu propsMenu = new JMenu();
+//	private JMenu windowsMenu = new JMenu();
+	private JMenu helpMenu = new JMenu();
 
 	@Override
 	protected void startup() {
@@ -47,21 +57,42 @@ public class MainApplication extends SingleFrameApplication {
 	}
 	
 	private JMenuBar createMenuBar() {
-		// TODO Файл, Задачи, Отчеты, Свойства, Окна, Помощь
-		JMenu file = new JMenu();
-		file.setName("fileMenu");
+		// TODO Файл, Задачи, Отчеты, Свойства, Окна, Помощь		
+		fileMenu.setName("fileMenu");
+		taskMenu.setName("taskMenu");
+		reportMenu.setName("reportMenu");
+		propsMenu.setName("propsMenu");
+//		windowsMenu.setName("windowsMenu");
+		helpMenu.setName("helpMenu");
 		
 		JMenuItem menuItem = new JMenuItem();
 		menuItem.setAction(getAction("quit"));
 		menuItem.setIcon(null);
-		file.add(menuItem);
+		fileMenu.add(menuItem);
+		menuItem = new JMenuItem();
+		menuItem.setAction(getAction("showAboutBox"));
+		menuItem.setIcon(null);
+		helpMenu.add(menuItem);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(file);
+		menuBar.add(fileMenu);
+		menuBar.add(taskMenu);
+		menuBar.add(reportMenu);
+		menuBar.add(propsMenu);
+//		menuBar.add(windowsMenu);
+		menuBar.add(helpMenu);
 		return menuBar;
 	}
 
 	private javax.swing.Action getAction(String actionName) {
 		return getContext().getActionMap().get(actionName);
+	}
+	
+	@Action public void showAboutBox() {
+		if (aboutBox == null) {
+			aboutBox = new TaskonautAboutBox(getMainFrame());
+			aboutBox.setLocationRelativeTo(getMainFrame());
+		}
+		show(aboutBox);
 	}
 }

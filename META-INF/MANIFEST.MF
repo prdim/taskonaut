@@ -8,9 +8,9 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.jdesktop.application,
  org.osgi.framework;version="1.3.0",
- org.osgi.util.tracker,
- org.taskonaut.api
+ org.osgi.util.tracker
 Bundle-Vendor: Prolubnikov Dmitry
 Export-Package: org.taskonaut.api,
+ org.taskonaut.app,
  org.taskonaut.tasks,
  org.taskonaut.util

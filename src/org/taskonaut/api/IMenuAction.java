@@ -11,5 +11,22 @@ import javax.swing.Action;
  *
  */
 public interface IMenuAction {
+	
+	/**
+	 * Имя действия
+	 * @return
+	 */
 	public String getActionName();
+	
+	/**
+	 * В каком меню расположить пункт?
+	 * @return
+	 */
+	public String getMenu();
+	
+	/**
+	 * Приоритет данного пункта - для сортировки пунктов в меню
+	 * @return
+	 */
+	public int getPriority();
 }
