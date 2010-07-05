@@ -6,6 +6,7 @@ package org.taskonaut.app;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -93,7 +94,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 	private void updateMenu() {
 		System.out.println("Update menu");
 		if(menuBar == null) return;
-		List<IMenuAction> t = Activator.getMenuTracker().getMenu();
+		Map<String, List<IMenuAction>> m = Activator.getMenuTracker().getMenu();
 		
 	}
 

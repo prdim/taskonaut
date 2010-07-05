@@ -5,6 +5,9 @@ package org.taskonaut.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -19,7 +22,7 @@ import org.taskonaut.api.IMenuAction;
  */
 public class MenuTracker extends ServiceTracker implements ServiceTrackerCustomizer {
 	private List<IChangeDataListener> changeListeners = new ArrayList<IChangeDataListener>();
-	private List<IMenuAction> items = new ArrayList<IMenuAction>();
+	private Map<String, List<IMenuAction>> items = new ConcurrentHashMap<String, List<IMenuAction>>();
 	
 	public MenuTracker(BundleContext context) {
 		super(context,IMenuAction.class.getName(),null);
@@ -29,14 +32,35 @@ public class MenuTracker extends ServiceTracker implements ServiceTrackerCustomi
 	@Override
 	public Object addingService(ServiceReference reference) {
 		IMenuAction item = (IMenuAction) context.getService(reference);
-		items.add(item);
+		if(items.containsKey(item.getMenu())) {
+			List<IMenuAction> k = items.get(item.getMenu());
+			boolean f = false;
+			for(int i=0; i<k.size(); i++) {
+				if(k.get(i).getPriority()>item.getPriority()) {
+					k.add(i==0 ? 0 : (i-1), item);
+					f = true;
+					break;
+				}
+			}
+			if(!f) k.add(item);
+			items.put(item.getMenu(), k);
+		} else {
+			ArrayList<IMenuAction> k = new ArrayList<IMenuAction>();
+			k.add(item);
+			items.put(item.getMenu(), k);
+		}
+			
+//		items.add(item);
 		notifyChanges();
 		return item;
 	}
 
 	@Override
 	public void removedService(ServiceReference reference, Object service) {
-		items.remove((IMenuAction)service);
+//		items.remove((IMenuAction)service);
+		IMenuAction i = (IMenuAction)service;
+		items.get(i.getMenu()).remove(i);
+		if(items.get(i.getMenu()).size()==0) items.remove(i.getMenu());
 		notifyChanges();
 		super.removedService(reference, service);
 	}
@@ -47,7 +71,7 @@ public class MenuTracker extends ServiceTracker implements ServiceTrackerCustomi
 		}
 	}
 	
-	public List<IMenuAction> getMenu() {
+	public Map<String, List<IMenuAction>> getMenu() {
 		return items;
 	}
 
