@@ -5,6 +5,7 @@ package org.taskonaut.app;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -17,14 +18,17 @@ import javax.swing.border.EmptyBorder;
 
 import org.jdesktop.application.Action;
 import org.jdesktop.application.SingleFrameApplication;
+import org.taskonaut.api.IChangeDataListener;
+import org.taskonaut.api.IMenuAction;
 import org.taskonaut.app.StatusBar;
 import org.taskonaut.app.MDIDesktopPane;
+import org.taskonaut.internal.Activator;
 
 /**
  * @author spec
  *
  */
-public class MainApplication extends SingleFrameApplication {
+public class MainApplication extends SingleFrameApplication implements IChangeDataListener {
 	private StatusBar statusBar;
 	public static boolean isInit = false;
 	private JDialog aboutBox;
@@ -34,12 +38,14 @@ public class MainApplication extends SingleFrameApplication {
 	private JMenu propsMenu = new JMenu();
 //	private JMenu windowsMenu = new JMenu();
 	private JMenu helpMenu = new JMenu();
+	private JMenuBar menuBar = null;
 
 	@Override
 	protected void startup() {
 		getMainFrame().setJMenuBar(createMenuBar());
 		show(createMainPanel());
 		isInit = true;
+		Activator.getMenuTracker().addChangeListener(this);
 	}
 	
 	/**
@@ -74,7 +80,7 @@ public class MainApplication extends SingleFrameApplication {
 		menuItem.setIcon(null);
 		helpMenu.add(menuItem);
 		
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
 		menuBar.add(taskMenu);
 		menuBar.add(reportMenu);
@@ -82,6 +88,13 @@ public class MainApplication extends SingleFrameApplication {
 //		menuBar.add(windowsMenu);
 		menuBar.add(helpMenu);
 		return menuBar;
+	}
+	
+	private void updateMenu() {
+		System.out.println("Update menu");
+		if(menuBar == null) return;
+		List<IMenuAction> t = Activator.getMenuTracker().getMenu();
+		
 	}
 
 	private javax.swing.Action getAction(String actionName) {
@@ -94,5 +107,11 @@ public class MainApplication extends SingleFrameApplication {
 			aboutBox.setLocationRelativeTo(getMainFrame());
 		}
 		show(aboutBox);
+	}
+
+	@Override
+	public void onChange(Object o) {
+		updateMenu();
+		
 	}
 }
