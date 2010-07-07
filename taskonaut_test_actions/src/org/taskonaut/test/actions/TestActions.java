@@ -24,12 +24,12 @@ public class TestActions implements IMenuAction {
 
 	@Override
 	public String getMenu() {
-		return "fileMenu";
+		return "taskMenu";
 	}
 
 	@Override
 	public int getPriority() {
-		return 100;
+		return 110;
 	}
 	
 	

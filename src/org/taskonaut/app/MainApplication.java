@@ -72,6 +72,8 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 //		windowsMenu.setName("windowsMenu");
 		helpMenu.setName("helpMenu");
 		
+		updateAllMenu();
+		
 		JMenuItem menuItem = new JMenuItem();
 		menuItem.setAction(getAction("quit"));
 		menuItem.setIcon(null);
@@ -85,17 +87,32 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		menuBar.add(fileMenu);
 		menuBar.add(taskMenu);
 		menuBar.add(reportMenu);
-		menuBar.add(propsMenu);
+//		menuBar.add(propsMenu);
 //		menuBar.add(windowsMenu);
 		menuBar.add(helpMenu);
 		return menuBar;
 	}
 	
-	private void updateMenu() {
+	private void updateAllMenu() {
 		System.out.println("Update menu");
-		if(menuBar == null) return;
-		Map<String, List<IMenuAction>> m = Activator.getMenuTracker().getMenu();
-		
+//		if(menuBar == null) return;
+//		Map<String, List<IMenuAction>> m = Activator.getMenuTracker().getMenu();
+		updateMenu("fileMenu", fileMenu);
+		updateMenu("taskMenu", taskMenu);
+		updateMenu("reportMenu", reportMenu);
+		updateMenu("helpMenu", helpMenu);
+	}
+	
+	private void updateMenu(String s, JMenu mn) {
+		if(!Activator.getMenuTracker().getMenu().containsKey(s)) return;
+		List<IMenuAction> mp = Activator.getMenuTracker().getMenu().get(s);
+		mn.removeAll();
+		for(IMenuAction i : mp) {
+			JMenuItem menuItem = new JMenuItem();
+			menuItem.setAction(getAction(i.getActionName()));
+			menuItem.setIcon(null);
+			mn.add(menuItem);
+		}
 	}
 
 	private javax.swing.Action getAction(String actionName) {
@@ -112,7 +129,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 
 	@Override
 	public void onChange(Object o) {
-		updateMenu();
+		updateAllMenu();
 		
 	}
 }
