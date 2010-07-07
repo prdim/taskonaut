@@ -109,7 +109,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		mn.removeAll();
 		for(IMenuAction i : mp) {
 			JMenuItem menuItem = new JMenuItem();
-			menuItem.setAction(getAction(i.getActionName()));
+			menuItem.setAction(getContext().getActionMap(i).get(i.getActionName()));
 			menuItem.setIcon(null);
 			mn.add(menuItem);
 		}
