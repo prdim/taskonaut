@@ -4,10 +4,12 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.taskonaut.api.IMenuAction;
+import org.taskonaut.api.MenuConnector;
 import org.taskonaut.test.actions.TestActions;
 
 public class Activator implements BundleActivator {
-	private ServiceRegistration reg;
+//	private ServiceRegistration reg;
+	private MenuConnector con;
 
 	/*
 	 * (non-Javadoc)
@@ -15,7 +17,8 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Start actions service");
-		reg = context.registerService(IMenuAction.class.getName(), new TestActions(), null);
+		con = new MenuConnector(context, new TestActions());
+//		reg = context.registerService(IMenuAction.class.getName(), new TestActions(), null);
 	}
 
 	/*
@@ -24,7 +27,8 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		System.out.println("Stop actions service");
-		reg.unregister();
+		con.close();
+//		reg.unregister();
 	}
 
 }

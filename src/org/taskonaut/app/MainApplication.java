@@ -46,7 +46,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		getMainFrame().setJMenuBar(createMenuBar());
 		show(createMainPanel());
 		isInit = true;
-		Activator.getMenuTracker().addChangeListener(this);
+		Activator.getMenuService().addChangeListener(this);
 	}
 	
 	/**
@@ -104,8 +104,8 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 	}
 	
 	private void updateMenu(String s, JMenu mn) {
-		if(!Activator.getMenuTracker().getMenu().containsKey(s)) return;
-		List<IMenuAction> mp = Activator.getMenuTracker().getMenu().get(s);
+		if(!Activator.getMenuService().getAllItems().containsKey(s)) return;
+		List<IMenuAction> mp = Activator.getMenuService().getAllItems().get(s);
 		mn.removeAll();
 		for(IMenuAction i : mp) {
 			JMenuItem menuItem = new JMenuItem();
