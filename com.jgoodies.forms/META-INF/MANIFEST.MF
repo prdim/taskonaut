@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JGoodies Forms API
+Bundle-SymbolicName: com.jgoodies.forms
+Bundle-Version: 1.2.1
+Bundle-ClassPath: forms.jar
+Bundle-Vendor: JGoodies Karsten Lentzsch
+Export-Package: com.jgoodies.forms.builder,
+ com.jgoodies.forms.debug,
+ com.jgoodies.forms.factories,
+ com.jgoodies.forms.layout,
+ com.jgoodies.forms.util
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: javax.swing,
+ javax.swing.border
