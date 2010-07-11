@@ -17,9 +17,13 @@ public class NewTaskAction implements IMenuAction {
 	
 	@Action
 	public void newTaskAction() {
-		EditTaskDialog d = new EditTaskDialog(new JFrame(), true);
-		d.setTaskPanel(new EditTaskPanel(new OneTask()));
+//		EditTaskDialog d = new EditTaskDialog(new JFrame(), true);
+		DefaultDialog d = new DefaultDialog(new JFrame(), true);
+//		d.setTaskPanel(new EditTaskPanel(new OneTask()));
+		d.setPanel(new EditTaskPanel(new OneTask()));
+		d.setTitle("Создание новой задачи");
 		d.setVisible(true);
+		
 	}
 
 	/* (non-Javadoc)

@@ -43,7 +43,7 @@ public class EditTaskPanel extends JPanel {
 		//======== this ========
 		setLayout(new FormLayout(
 			"default, $lcgap, default:grow, $lcgap, default, $lcgap, default:grow, $lcgap, default, $lcgap, default:grow",
-			"2*(default, $lgap), fill:30dlu, 2*($lgap, default), $lgap, fill:default:grow"));
+			"2*(default, $lgap), fill:30dlu, 2*($lgap, default), $lgap, fill:70dlu:grow"));
 
 		//---- label2 ----
 		label2.setText(bundle.getString("label2.text"));

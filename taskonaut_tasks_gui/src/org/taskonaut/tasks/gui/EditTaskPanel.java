@@ -31,8 +31,9 @@ import org.taskonaut.tasks.TimeLogger;
  *
  * @author ProlubnikovDA
  */
-public class EditTaskPanel extends javax.swing.JPanel {
+public class EditTaskPanel extends JPanelExt {
     private OneTask t = null;
+    public boolean ok = false;
     
     /** Creates new form editTaskPanel */
     public EditTaskPanel() {
@@ -55,7 +56,24 @@ public class EditTaskPanel extends javax.swing.JPanel {
         return t;
     }
 
-    /**
+    @Override
+	public boolean checkOk() {
+    	if(nameField.getText().equals("")) return false;
+        if(endDate.getDate().before(startDate.getDate())) return false;
+        return true;
+	}
+
+	@Override
+	public void beforeCloseOk() {
+		ok = true;
+	}
+
+	@Override
+	public void beforeCloseCancel() {
+		ok = false;
+	}
+
+	/**
      * Заполнение данных в панели из переменных
      */
     private void fillData() {
@@ -89,11 +107,11 @@ public class EditTaskPanel extends javax.swing.JPanel {
         t.setPriority((OneTask.Priority)priorityBox.getSelectedItem());
     }
     
-    public boolean check() {
-        if(nameField.getText().equals("")) return false;
-        if(endDate.getDate().before(startDate.getDate())) return false;
-        return true;
-    }
+//    public boolean check() {
+//        if(nameField.getText().equals("")) return false;
+//        if(endDate.getDate().before(startDate.getDate())) return false;
+//        return true;
+//    }
 
     /**
      * Модель таблицы с данными времени выполнения
@@ -431,6 +449,7 @@ public class EditTaskPanel extends javax.swing.JPanel {
 		nameField = new JTextField();
 		label1 = new JLabel();
 		startDate = new JXDatePicker();
+		startDate.setEditable(false);
 		endDate = new JXDatePicker();
 		scrollPane1 = new JScrollPane();
 		commentText = new JTextArea();
@@ -451,7 +470,7 @@ public class EditTaskPanel extends javax.swing.JPanel {
 		//======== this ========
 		setLayout(new FormLayout(
 			"default, $lcgap, default:grow, $lcgap, default, $lcgap, default:grow, $lcgap, default, $lcgap, default:grow",
-			"2*(default, $lgap), fill:30dlu, 2*($lgap, default), $lgap, fill:default:grow"));
+			"2*(default, $lgap), fill:30dlu, 2*($lgap, default), $lgap, fill:70dlu:grow"));
 
 		//---- label2 ----
 		label2.setText(resourceMap.getString("label2.text"));

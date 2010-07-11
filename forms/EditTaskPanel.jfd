@@ -25,7 +25,7 @@
        </void> 
        <void method="setProperty"> 
         <string>$rowSpecs</string> 
-        <string>default, linegap, default, linegap, fill:30dlu, linegap, default, linegap, default, linegap, fill:default:grow</string> 
+        <string>default, linegap, default, linegap, fill:30dlu, linegap, default, linegap, default, linegap, fill:70dlu:grow</string> 
        </void> 
       </object> 
       <void property="name"> 
@@ -446,8 +446,8 @@
       <void method="setProperty"> 
        <string>size</string> 
        <object class="java.awt.Dimension"> 
-        <int>500</int> 
-        <int>275</int> 
+        <int>580</int> 
+        <int>360</int> 
        </object> 
       </void> 
      </object> 

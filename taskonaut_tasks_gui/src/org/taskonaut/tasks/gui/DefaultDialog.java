@@ -1,20 +1,31 @@
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+/**
+ * 
+ */
+package org.taskonaut.tasks.gui;
+
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
-/*
- * Created by JFormDesigner on Sun Jul 11 00:41:13 YEKST 2010
- */
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
 
 /**
  * @author spec
+ *
  */
 public class DefaultDialog extends JDialog {
-	public DefaultDialog(Frame owner) {
-		super(owner);
+	private JPanelExt panel;
+	
+	public DefaultDialog(Frame owner, boolean modal) {
+		super(owner, modal);
 		initComponents();
 	}
 
@@ -22,16 +33,27 @@ public class DefaultDialog extends JDialog {
 		super(owner);
 		initComponents();
 	}
+	
+	public void setPanel(JPanelExt p) {
+		contentPanel.add(p);
+		pack();
+		setLocationRelativeTo(getOwner());
+		panel = p;
+	}
 
 	private void okButtonActionPerformed(ActionEvent e) {
-		// TODO add your code here
+		if(!panel.checkOk()) return;
+		panel.beforeCloseOk();
+		this.dispose();
 	}
 
 	private void cancelButtonActionPerformed(ActionEvent e) {
-		// TODO add your code here
+		panel.beforeCloseCancel();
+		this.dispose();
 	}
 
 	private void initComponents() {
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 		dialogPane = new JPanel();
 		contentPanel = new JPanel();

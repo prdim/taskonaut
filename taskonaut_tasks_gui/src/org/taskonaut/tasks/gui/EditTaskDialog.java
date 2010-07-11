@@ -103,7 +103,7 @@ public class EditTaskDialog extends javax.swing.JDialog {
     }// </editor-fold>                        
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        if(!taskPanel.check()) return;
+//        if(!taskPanel.check()) return;
         ok = true;
         this.dispose();
     }                                        
