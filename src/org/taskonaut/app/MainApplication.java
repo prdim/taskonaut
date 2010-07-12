@@ -18,7 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
+import org.jdesktop.application.Task;
 import org.taskonaut.api.IChangeDataListener;
 import org.taskonaut.api.IMenuAction;
 import org.taskonaut.app.StatusBar;
@@ -129,7 +131,22 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 
 	@Override
 	public void onChange(Object o) {
-		updateAllMenu();
+		updateAllMenu();	
+	}
+	
+	public class MessageTask extends Task<Void, Void> {
+		private String msg;
+
+		public MessageTask(Application application, String msg) {
+			super(application);
+			this.msg = msg;
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			setMessage(msg);
+			return null;
+		}
 		
 	}
 }

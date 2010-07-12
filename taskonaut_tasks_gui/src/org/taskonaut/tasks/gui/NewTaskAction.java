@@ -6,7 +6,10 @@ package org.taskonaut.tasks.gui;
 import javax.swing.JFrame;
 
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Task;
 import org.taskonaut.api.IMenuAction;
+import org.taskonaut.app.MainApplication;
+import org.taskonaut.app.MainApplication.MessageTask;
 import org.taskonaut.tasks.OneTask;
 
 /**
@@ -16,14 +19,18 @@ import org.taskonaut.tasks.OneTask;
 public class NewTaskAction implements IMenuAction {
 	
 	@Action
-	public void newTaskAction() {
+	public Task newTaskAction() {
 //		EditTaskDialog d = new EditTaskDialog(new JFrame(), true);
 		DefaultDialog d = new DefaultDialog(new JFrame(), true);
 //		d.setTaskPanel(new EditTaskPanel(new OneTask()));
-		d.setPanel(new EditTaskPanel(new OneTask()));
+		EditTaskPanel p = new EditTaskPanel(new OneTask());
+		d.setPanel(p);
 		d.setTitle("Создание новой задачи");
 		d.setVisible(true);
-		
+		if(p.ok) {
+			return new MainApplication.MessageTask(MainApplication.getInstance(), "Новая задача создана");
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
