@@ -31,6 +31,7 @@ public class NewTaskAction implements IMenuAction {
 				d.setVisible(true);
 				if(p.ok) {
 					setMessage("Новая задача создана");
+					// TODO запись в БД
 				} else {
 					setMessage("Операция отменена пользователем");
 				}
