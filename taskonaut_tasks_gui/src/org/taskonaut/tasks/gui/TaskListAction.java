@@ -19,8 +19,11 @@ public class TaskListAction implements IMenuAction {
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				System.out.println("!!!");
-				setMessage("!!!");
+				TaskListPanel p = new TaskListPanel();
+				DefaultInternalFrame f = new DefaultInternalFrame(p);
+				f.setTitle("Список задач");
+				((MainApplication)MainApplication.getInstance()).addInternalFrame(f);
+//				setMessage("!!!");
 				return null;
 			}
 			

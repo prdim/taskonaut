@@ -11,10 +11,12 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import org.jdesktop.application.Action;
@@ -42,6 +44,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 //	private JMenu windowsMenu = new JMenu();
 	private JMenu helpMenu = new JMenu();
 	private JMenuBar menuBar = null;
+	private MDIDesktopPane mdi;
 
 	@Override
 	protected void startup() {
@@ -51,6 +54,10 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		Activator.getMenuService().addChangeListener(this);
 	}
 	
+	public void addInternalFrame(JInternalFrame f) {
+		mdi.add(f);
+	}
+	
 	/**
 	 * Создаем основное окно приложения
 	 * @return
@@ -58,7 +65,11 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 	private JComponent createMainPanel() {
 		statusBar = new StatusBar(this, getContext().getTaskMonitor());
 		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(new MDIDesktopPane(), BorderLayout.CENTER);
+		JScrollPane sp = new JScrollPane();
+		mdi = new MDIDesktopPane();
+		sp.setViewportView(mdi);
+		panel.add(sp, BorderLayout.CENTER);
+//		panel.add(new MDIDesktopPane(), BorderLayout.CENTER);
 		panel.add(statusBar, BorderLayout.SOUTH);
 		panel.setBorder(new EmptyBorder(0, 2, 2, 2)); // top, left, bottom, right
 		panel.setPreferredSize(new Dimension(640, 480));

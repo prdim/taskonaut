@@ -73,6 +73,7 @@ public class EditTaskPanel extends JPanelExt {
 		ok = false;
 	}
 
+
 	/**
      * Заполнение данных в панели из переменных
      */

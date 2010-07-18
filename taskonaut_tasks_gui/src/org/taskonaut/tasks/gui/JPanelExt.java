@@ -12,6 +12,7 @@ import javax.swing.JPanel;
  *
  */
 public abstract class JPanelExt extends JPanel {
+	protected ParentPanel parentPanel = null;
 	
 	/**
 	 * Возвращае истину, если диалог с панелью можно закрыть по "Ок"
@@ -28,4 +29,13 @@ public abstract class JPanelExt extends JPanel {
 	 * Вызывается перед закрытием диалога с панелью
 	 */
 	public abstract void beforeCloseCancel();
+	
+	/**
+	 * Установить родительскую панель 
+	 * (чтобы дочерняя смогла инициировать ее закрытие при необходимости)
+	 * @param p
+	 */
+	public void setParentPanel(ParentPanel p) {
+		parentPanel = p;
+	}
 }
