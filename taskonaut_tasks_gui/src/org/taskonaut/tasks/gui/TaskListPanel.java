@@ -51,7 +51,7 @@ public class TaskListPanel extends JPanelExt {
 	 */
 	@Override
 	public void beforeCloseCancel() {
-		// TODO Auto-generated method stub
+		System.out.println("Close it");
 		
 	}
 
