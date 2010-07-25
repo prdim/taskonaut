@@ -72,7 +72,7 @@ public class DefaultInternalFrame extends JInternalFrame implements ParentPanel 
 	}
 	
 	private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
-        pe.beforeCloseCancel();
+        pe.beforeClose();
     }
 
 	@Override

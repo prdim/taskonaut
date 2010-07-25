@@ -60,17 +60,13 @@ public class EditTaskPanel extends JPanelExt {
 	public boolean checkOk() {
     	if(nameField.getText().equals("")) return false;
         if(endDate.getDate().before(startDate.getDate())) return false;
+        ok = true;
         return true;
 	}
 
 	@Override
-	public void beforeCloseOk() {
-		ok = true;
-	}
-
-	@Override
-	public void beforeCloseCancel() {
-		ok = false;
+	public void beforeClose() {
+//		ok = false;
 	}
 
 

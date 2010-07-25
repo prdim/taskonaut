@@ -5,12 +5,22 @@ package org.taskonaut.tasks.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 import org.jdesktop.swingx.*;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
+import org.taskonaut.tasks.OneTask;
+import org.taskonaut.tasks.TaskList;
+import org.taskonaut.tasks.gui.internal.Activator;
 
 /**
  * Список задач
@@ -19,6 +29,7 @@ import org.jdesktop.swingx.*;
  *
  */
 public class TaskListPanel extends JPanelExt {
+	private ChangeTaskEventHandler eventHandler;
 	
 	/**
 	 * 
@@ -26,6 +37,9 @@ public class TaskListPanel extends JPanelExt {
 	public TaskListPanel() {
 //		super();
 		initComponents();
+		xTable1.setModel(new TaskListTableModel());
+		eventHandler = new ChangeTaskEventHandler();
+		Activator.regEventHandler(eventHandler, getHandlerServiceProperties("org/taskonaut/tasks/gui/events/*"));
 	}
 
 	/* (non-Javadoc)
@@ -38,21 +52,12 @@ public class TaskListPanel extends JPanelExt {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.taskonaut.tasks.gui.JPanelExt#beforeCloseOk()
-	 */
-	@Override
-	public void beforeCloseOk() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
 	 * @see org.taskonaut.tasks.gui.JPanelExt#beforeCloseCancel()
 	 */
 	@Override
-	public void beforeCloseCancel() {
+	public void beforeClose() {
 		System.out.println("Close it");
-		
+		Activator.unregEventHandler(eventHandler);
 	}
 
 	private void xTable1MouseClicked(MouseEvent e) {
@@ -65,6 +70,63 @@ public class TaskListPanel extends JPanelExt {
 
 	private void filterButtonActionPerformed(ActionEvent e) {
 		// TODO add your code here
+	}
+	
+	private class ChangeTaskEventHandler implements EventHandler {
+
+		@Override
+		public void handleEvent(Event event) {
+			System.out.println("Event: " + event.getTopic());
+			System.out.println("Change task: " + event.getProperty("task_id"));
+			xTable1.setModel(new TaskListTableModel());
+			contentPanel.repaint();
+		}
+		
+	}
+	
+	protected Dictionary<String, Object> getHandlerServiceProperties(String... topics) {
+	    Dictionary<String, Object> result = new Hashtable<String, Object>();
+	    result.put(EventConstants.EVENT_TOPIC, topics);
+	    return result;
+	  }
+	
+	private class TaskListTableModel extends AbstractTableModel {
+		private String[] columns = {"Задача"};
+		private Vector<OneTask> data;
+
+		/**
+		 * 
+		 */
+		public TaskListTableModel() {
+			data = new Vector<OneTask>();
+			for(long i : TaskList.getInstance().getTaskList().keySet()) {
+				data.add(TaskList.getInstance().getTask(i));
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+		 */
+		@Override
+		public String getColumnName(int c) {
+			return columns[c];
+		}
+
+		@Override
+		public int getColumnCount() {
+			return columns.length;
+		}
+
+		@Override
+		public int getRowCount() {
+			return data.size();
+		}
+
+		@Override
+		public Object getValueAt(int r, int c) {
+			return data.get(r).getName();
+		}
+		
 	}
 
 	private void initComponents() {

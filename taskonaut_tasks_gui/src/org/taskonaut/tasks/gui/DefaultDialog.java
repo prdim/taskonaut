@@ -43,12 +43,12 @@ public class DefaultDialog extends JDialog {
 
 	private void okButtonActionPerformed(ActionEvent e) {
 		if(!panel.checkOk()) return;
-		panel.beforeCloseOk();
+		panel.beforeClose();
 		this.dispose();
 	}
 
 	private void cancelButtonActionPerformed(ActionEvent e) {
-		panel.beforeCloseCancel();
+		panel.beforeClose();
 		this.dispose();
 	}
 

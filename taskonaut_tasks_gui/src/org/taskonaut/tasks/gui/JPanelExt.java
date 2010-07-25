@@ -23,12 +23,7 @@ public abstract class JPanelExt extends JPanel {
 	/**
 	 * Вызывается перед закрытием диалога с панелью
 	 */
-	public abstract void beforeCloseOk();
-	
-	/**
-	 * Вызывается перед закрытием диалога с панелью
-	 */
-	public abstract void beforeCloseCancel();
+	public abstract void beforeClose();
 	
 	/**
 	 * Установить родительскую панель 
