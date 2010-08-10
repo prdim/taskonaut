@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.taskonaut.tray
+Bundle-SymbolicName: org.taskonaut.tray
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.taskonaut.tray.internal.Activator
+Bundle-Vendor: Dmitry Prolubnikov
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.jdesktop.application,
+ org.osgi.framework;version="1.3.0",
+ org.taskonaut.api,
+ org.taskonaut.app,
+ org.taskonaut.tasks,
+ org.taskonaut.util
+Bundle-ActivationPolicy: lazy
+Export-Package: org.taskonaut.tray

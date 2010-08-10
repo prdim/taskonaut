@@ -18,3 +18,4 @@ Import-Package: com.jgoodies.forms.factories,
  org.taskonaut.tasks
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.equinox.event;bundle-version="1.2.0"
+Export-Package: org.taskonaut.tasks.gui
