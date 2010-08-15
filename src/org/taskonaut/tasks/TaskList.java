@@ -68,6 +68,7 @@ public class TaskList {
     
     public void putTask(OneTask t) {
         taskList.put(t.getId(), t);
+        save();
         onChange(t);
     }
 
@@ -77,6 +78,7 @@ public class TaskList {
 
     public void removeTask(long id) {
         taskList.remove(id);
+        save();
         onChange(null);
     }
 
