@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.taskonaut.convert
+Bundle-SymbolicName: org.taskonaut.convert
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.taskonaut.convert.internal.Activator
+Bundle-Vendor: Dmitry Prolubnikov
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.jdesktop.application,
+ org.osgi.framework;version="1.3.0",
+ org.taskonaut.api,
+ org.taskonaut.app
+Bundle-ActivationPolicy: lazy
+Export-Package: org.taskonaut.convert.actions,
+ org.taskonaut.convert.actions.resources
