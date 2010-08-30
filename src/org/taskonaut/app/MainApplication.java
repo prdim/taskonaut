@@ -49,9 +49,10 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 	@Override
 	protected void startup() {
 		getMainFrame().setJMenuBar(createMenuBar());
+		// TODO Понаблюдать за порядком запуска бандлов и добавлением пунктов меню!!!
+		Activator.getMenuService().addChangeListener(this);
 		show(createMainPanel());
 		isInit = true;
-		Activator.getMenuService().addChangeListener(this);
 	}
 	
 	public void addInternalFrame(JInternalFrame f) {
@@ -87,14 +88,14 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		
 		updateAllMenu();
 		
-		JMenuItem menuItem = new JMenuItem();
-		menuItem.setAction(getAction("quit"));
-		menuItem.setIcon(null);
-		fileMenu.add(menuItem);
-		menuItem = new JMenuItem();
-		menuItem.setAction(getAction("showAboutBox"));
-		menuItem.setIcon(null);
-		helpMenu.add(menuItem);
+//		JMenuItem menuItem = new JMenuItem();
+//		menuItem.setAction(getAction("quit"));
+//		menuItem.setIcon(null);
+//		fileMenu.add(menuItem);
+//		menuItem = new JMenuItem();
+//		menuItem.setAction(getAction("showAboutBox"));
+//		menuItem.setIcon(null);
+//		helpMenu.add(menuItem);
 		
 		menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
@@ -107,19 +108,29 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 	}
 	
 	private void updateAllMenu() {
-		System.out.println("Update menu");
+		System.out.println("Update ALL menu");
 //		if(menuBar == null) return;
 //		Map<String, List<IMenuAction>> m = Activator.getMenuTracker().getMenu();
 		updateMenu("fileMenu", fileMenu);
 		updateMenu("taskMenu", taskMenu);
 		updateMenu("reportMenu", reportMenu);
 		updateMenu("helpMenu", helpMenu);
+		// Постоянные пункты, которые не зависят от наличия плагинов
+		JMenuItem menuItem = new JMenuItem();
+		menuItem.setAction(getAction("quit"));
+		menuItem.setIcon(null);
+		fileMenu.add(menuItem);
+		menuItem = new JMenuItem();
+		menuItem.setAction(getAction("showAboutBox"));
+		menuItem.setIcon(null);
+		helpMenu.add(menuItem);
 	}
 	
 	private void updateMenu(String s, JMenu mn) {
-		if(!Activator.getMenuService().getAllItems().containsKey(s)) return;
-		List<IMenuAction> mp = Activator.getMenuService().getAllItems().get(s);
 		mn.removeAll();
+		if(!Activator.getMenuService().getAllItems().containsKey(s)) return;
+		System.out.println("Update menu -> " + s);
+		List<IMenuAction> mp = Activator.getMenuService().getAllItems().get(s);
 		for(IMenuAction i : mp) {
 			JMenuItem menuItem = new JMenuItem();
 			menuItem.setAction(getContext().getActionMap(i).get(i.getActionName()));

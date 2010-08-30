@@ -69,6 +69,7 @@ public class MenuService implements IMenuService {
 
 	public void addChangeListener(IChangeDataListener ls) {
 		changeListeners.add(ls);
+		System.out.println("add listener");
 	}
 	
 	public void removeChangeListener(IChangeDataListener ls) {

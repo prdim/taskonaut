@@ -7,6 +7,9 @@ Bundle-Activator: org.taskonaut.db.internal.Activator
 Bundle-Vendor: Prolubnikov Dmitry
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.amazon.carbonado,
+ com.amazon.carbonado.adapter,
+ com.amazon.carbonado.gen,
+ com.amazon.carbonado.raw,
  com.amazon.carbonado.repo.sleepycat,
  com.amazon.carbonado.spi,
  org.osgi.framework;version="1.3.0",
