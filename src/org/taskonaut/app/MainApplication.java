@@ -53,6 +53,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		Activator.getMenuService().addChangeListener(this);
 		show(createMainPanel());
 		isInit = true;
+		updateAllMenu();
 	}
 	
 	public void addInternalFrame(JInternalFrame f) {
@@ -86,7 +87,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 //		windowsMenu.setName("windowsMenu");
 		helpMenu.setName("helpMenu");
 		
-		updateAllMenu();
+//		updateAllMenu();
 		
 //		JMenuItem menuItem = new JMenuItem();
 //		menuItem.setAction(getAction("quit"));
