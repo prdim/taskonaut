@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.taskonaut.bundleview
+Bundle-SymbolicName: org.taskonaut.bundleview
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.taskonaut.bundleview.Activator
+Bundle-Vendor: Dmitry Prolubnikov
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.jdesktop.application,
+ org.osgi.framework;version="1.3.0",
+ org.taskonaut.api,
+ org.taskonaut.app,
+ org.taskonaut.tasks.gui
+Bundle-ActivationPolicy: lazy
+Export-Package: org.taskonaut.bundleview,
+ org.taskonaut.bundleview.resources
