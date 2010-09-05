@@ -9,7 +9,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.jdesktop.application,
  org.osgi.framework;version="1.3.0",
  org.taskonaut.api,
- org.taskonaut.app
+ org.taskonaut.api.tasks,
+ org.taskonaut.app,
+ org.taskonaut.util
 Bundle-ActivationPolicy: lazy
 Export-Package: org.taskonaut.test.actions,
  org.taskonaut.test.actions.resources
