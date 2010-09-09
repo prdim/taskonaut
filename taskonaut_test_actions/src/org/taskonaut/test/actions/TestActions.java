@@ -9,6 +9,7 @@ import org.jdesktop.application.Action;
 import org.taskonaut.api.IMenuAction;
 import org.taskonaut.api.tasks.TaskFactory;
 import org.taskonaut.api.tasks.TaskItem;
+import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.app.*;
 import org.taskonaut.util.FileUtils;
 
@@ -20,10 +21,11 @@ public class TestActions implements IMenuAction {
 	
 	@Action
 	public void testAction1() throws FileNotFoundException {
-		System.out.println("Test action!");
-		TaskItem t = TaskFactory.createNewTask("test task!!!");
-		t.setPriority(TaskItem.Priority.критично.name());
-		FileUtils.beanToXML(t, "./test.xml");
+//		System.out.println("Test action!");
+//		TaskItem t = TaskFactory.createNewTask("test task!!!");
+//		t.setPriority(TaskItem.Priority.критично.name());
+//		FileUtils.beanToXML(t, "./test.xml");
+		TaskStoreServiceConnector.getStore().readAllTasks();
 	}
 
 	@Override
