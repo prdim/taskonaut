@@ -31,7 +31,7 @@ public class Adapter {
     public static TaskStore adaptee(OneTask t1, TaskStore t2) {
         t2.setID(t1.getId());
         t2.setComment(t1.getComment());
-        t2.setExecute(t1.getExecute());
+//        t2.setExecute(t1.getExecute());
         t2.setName(t1.getName());
         t2.setOwner(t1.getOwner());
         t2.setPriority(t1.getPriority().name());
@@ -45,7 +45,7 @@ public class Adapter {
         OneTask t = new OneTask();
         t.setId(s.getID());
         t.setComment(s.getComment());
-        t.setExecute(s.getExecute());
+//        t.setExecute(s.getExecute());
         t.setName(s.getName());
         t.setOwner(s.getOwner());
         t.setPriority(OneTask.Priority.valueOf(s.getPriority()));

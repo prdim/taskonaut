@@ -22,6 +22,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		service = new TaskStoreService();
+		service.openStorage();
 		registration = bundleContext.registerService(ITaskStoreService.class.getName(), service, null);
 		System.out.println("Service DB started");
 	}
@@ -32,6 +33,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
+		service.closeStorage();
 		registration.unregister();
 		System.out.println("Service DB stop");
 	}

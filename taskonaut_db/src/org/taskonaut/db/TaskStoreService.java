@@ -3,24 +3,59 @@
  */
 package org.taskonaut.db;
 
+import java.io.File;
 import java.util.Collection;
 
 import org.taskonaut.api.tasks.ITaskStoreService;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TimeLogItem;
 
+import com.amazon.carbonado.ConfigurationException;
+import com.amazon.carbonado.Repository;
+import com.amazon.carbonado.RepositoryException;
+import com.amazon.carbonado.Storage;
+import com.amazon.carbonado.SupportException;
+import com.amazon.carbonado.repo.sleepycat.BDBRepositoryBuilder;
+
 /**
  * @author spec
  *
  */
 public class TaskStoreService implements ITaskStoreService {
+	private BDBRepositoryBuilder builder = null;
+    private Repository repo = null;
+    
+    public void openStorage() throws ConfigurationException, RepositoryException {
+        builder = new BDBRepositoryBuilder();
+        builder.setName("taskonaut");
+        File envHome = new File("./db", "taskonaut");
+        builder.setEnvironmentHomeFile(envHome);
+        builder.setTransactionWriteNoSync(true);
+        repo = builder.build();
+    }
+
+    public void closeStorage() {
+        repo.close();
+    }
 
 	/* (non-Javadoc)
 	 * @see org.taskonaut.api.tasks.ITaskStoreService#readAllTasks()
 	 */
 	@Override
 	public Collection<TaskItem> readAllTasks() {
-		System.out.println("Test!!!");
+		try {
+			Storage<TaskStore> storage = repo.storageFor(TaskStore.class);
+			TaskStore t;
+			t = storage.query().loadOne();
+			System.out.println(t.getName());
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 

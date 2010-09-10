@@ -3,8 +3,6 @@
  */
 package org.taskonaut.api.tasks;
 
-import java.util.Date;
-
 /**
  * @author spec
  *
