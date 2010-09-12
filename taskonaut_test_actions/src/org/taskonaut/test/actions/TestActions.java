@@ -30,6 +30,7 @@ public class TestActions implements IMenuAction {
 		for(TaskItem t : i) {
 			System.out.println(t.getName());
 		}
+		System.out.println(TaskStoreServiceConnector.getStore().readAllTimeLogItems().size());
 	}
 
 	@Override

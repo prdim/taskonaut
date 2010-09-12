@@ -63,11 +63,11 @@ public interface ITaskStoreService {
 	/**
 	 * Создает и добавляет в БД новую отметку времени
 	 * @param start
-	 * @param duration
+	 * @param end
 	 * @param task_id
 	 * @return
 	 */
-	public TimeLogItem addTime(long start, long duration, long task_id);
+	public TimeLogItem addTime(long start, long end, long task_id);
 	
 	/**
 	 * Читает из БД задачу с заданным ИД

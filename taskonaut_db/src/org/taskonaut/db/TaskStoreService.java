@@ -166,14 +166,39 @@ public class TaskStoreService implements ITaskStoreService {
 	 */
 	@Override
 	public List<TimeLogItem> readTimeLogItems(long task_id) {
-		// TODO Auto-generated method stub
-		return null;
+		List<TimeLogItem> lt = new ArrayList<TimeLogItem>();
+		try {
+			Storage<TimeLogStore> store = repo.storageFor(TimeLogStore.class);
+			Cursor<TimeLogStore> c = store.query("taskId=?").with(task_id).fetch();
+			while(c.hasNext()) {
+				lt.add(adaptee(c.next()));
+			}
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return lt;
 	}
 
 	@Override
 	public void saveAllTimeLogItems(List<TimeLogItem> c) {
-		// TODO Auto-generated method stub
-		
+		try {
+			Storage<TimeLogStore> store = repo.storageFor(TimeLogStore.class);
+			TimeLogStore t = store.prepare();
+			for(TimeLogItem i : c) {
+				t = adaptee(i, t);
+				if(!t.tryUpdate()) t.insert();
+			}
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -196,8 +221,13 @@ public class TaskStoreService implements ITaskStoreService {
 	 */
 	@Override
 	public void saveTimeLog(TimeLogItem t) {
-		// TODO Auto-generated method stub
-
+		TimeLogStore s = adaptee(t);
+		try {
+			if(s.tryUpdate()) s.insert();
+		} catch (PersistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -224,9 +254,22 @@ public class TaskStoreService implements ITaskStoreService {
 	 * @see org.taskonaut.api.tasks.ITaskStoreService#addTime(long, long, long)
 	 */
 	@Override
-	public TimeLogItem addTime(long start, long duration, long task_id) {
-		// TODO Auto-generated method stub
-		return null;
+	public TimeLogItem addTime(long start, long end, long task_id) {
+		TimeLogStore t = null;
+		try {
+			t = repo.storageFor(TimeLogStore.class).prepare();
+			t.setID(start);
+			t.setEnd(end);
+			t.setTaskId(task_id);
+			t.setComment("");
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 
 	/* (non-Javadoc)
@@ -234,8 +277,18 @@ public class TaskStoreService implements ITaskStoreService {
 	 */
 	@Override
 	public TaskItem readTask(long task_id) {
-		// TODO Auto-generated method stub
-		return null;
+		TaskStore t = null;
+		try {
+			Storage<TaskStore> store = repo.storageFor(TaskStore.class);
+			t = store.query("ID=?").with(task_id).tryLoadOne();
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 
 	/* (non-Javadoc)
@@ -243,8 +296,17 @@ public class TaskStoreService implements ITaskStoreService {
 	 */
 	@Override
 	public void deleteTask(long task_id) {
-		// TODO Auto-generated method stub
-
+		try {
+			TaskStore t = repo.storageFor(TaskStore.class).prepare();
+			t.setID(task_id);
+			t.tryDelete();
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -252,8 +314,17 @@ public class TaskStoreService implements ITaskStoreService {
 	 */
 	@Override
 	public void deleteTimeLog(long time_log_id) {
-		// TODO Auto-generated method stub
-
+		try {
+			TimeLogStore t = repo.storageFor(TimeLogStore.class).prepare();
+			t.setID(time_log_id);
+			t.tryDelete();
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -261,8 +332,16 @@ public class TaskStoreService implements ITaskStoreService {
 	 */
 	@Override
 	public void deleteAllTimeLog(long task_id) {
-		// TODO Auto-generated method stub
-
+		try {
+			Storage<TimeLogStore> store = repo.storageFor(TimeLogStore.class);
+			store.query("taskId=?").with(task_id).deleteAll();
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
