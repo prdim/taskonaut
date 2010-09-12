@@ -11,8 +11,7 @@ Import-Package: com.amazon.carbonado,
  org.osgi.framework;version="1.3.0",
  org.taskonaut.api,
  org.taskonaut.app,
- org.taskonaut.db,
- org.taskonaut.tasks
+ org.taskonaut.db
 Bundle-ActivationPolicy: lazy
 Export-Package: org.taskonaut.convert.actions,
  org.taskonaut.convert.actions.resources

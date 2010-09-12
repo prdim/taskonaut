@@ -13,5 +13,4 @@ Bundle-Vendor: Prolubnikov Dmitry
 Export-Package: org.taskonaut.api,
  org.taskonaut.api.tasks,
  org.taskonaut.app,
- org.taskonaut.tasks,
  org.taskonaut.util

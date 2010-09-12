@@ -6,6 +6,9 @@ package org.taskonaut.tasks.gui;
 import com.jgoodies.forms.layout.*;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
+import org.taskonaut.api.tasks.TaskItem;
+import org.taskonaut.api.tasks.TaskStoreServiceConnector;
+import org.taskonaut.api.tasks.TimeLogItem;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,17 +25,13 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 
-import org.taskonaut.tasks.OneTask;
-import org.taskonaut.tasks.TimeLogItem;
-import org.taskonaut.tasks.TimeLogger;
-
 
 /**
  *
  * @author ProlubnikovDA
  */
 public class EditTaskPanel extends JPanelExt {
-    private OneTask t = null;
+    private TaskItem t = null;
     public boolean ok = false;
     
     /** Creates new form editTaskPanel */
@@ -40,18 +39,18 @@ public class EditTaskPanel extends JPanelExt {
         initComponents();
     }
 
-    public EditTaskPanel(OneTask t) {
+    public EditTaskPanel(TaskItem t) {
         initComponents();
         this.t = t;
         fillData();
     }
 
-    public void setTask(OneTask t) {
+    public void setTask(TaskItem t) {
         this.t = t;
         fillData();
     }
 
-    public OneTask getTask() {
+    public TaskItem getTask() {
         readData();
         return t;
     }
@@ -76,18 +75,18 @@ public class EditTaskPanel extends JPanelExt {
     private void fillData() {
         if(t==null) return;
         commentText.setText(t.getComment());
-        endDate.setDate(t.getExecute());
+        endDate.setDate(new Date(t.getExecute()));
         nameField.setText(t.getName());
         ownerField.setText(t.getOwner());
-        startDate.setDate(new Date(t.getId()));
-        typeBox.setModel(new DefaultComboBoxModel(OneTask.Type.values()));
+        startDate.setDate(new Date(t.getID()));
+        typeBox.setModel(new DefaultComboBoxModel(TaskItem.Type.values()));
         typeBox.setSelectedItem(t.getType());
-        statusBox.setModel(new DefaultComboBoxModel(OneTask.Status.values()));
+        statusBox.setModel(new DefaultComboBoxModel(TaskItem.Status.values()));
         statusBox.setSelectedItem(t.getState());
-        priorityBox.setModel(new DefaultComboBoxModel(OneTask.Priority.values()));
+        priorityBox.setModel(new DefaultComboBoxModel(TaskItem.Priority.values()));
         priorityBox.setSelectedItem(t.getPriority());
         TimeTableModel m = new TimeTableModel();
-        m.setData(TimeLogger.getInstance().getTaskLog(t.getId()));
+        m.setData(TaskStoreServiceConnector.getStore().readTimeLogItems(t.getID()));
         jXTable1.setModel(m);
     }
 
@@ -96,12 +95,12 @@ public class EditTaskPanel extends JPanelExt {
      */
     private void readData() {
         t.setComment(commentText.getText());
-        t.setExecute(endDate.getDate());
+        t.setExecute(endDate.getDate().getTime());
         t.setName(nameField.getText());
         t.setOwner(ownerField.getText());
-        t.setType((OneTask.Type)typeBox.getSelectedItem());
-        t.setState((OneTask.Status)statusBox.getSelectedItem());
-        t.setPriority((OneTask.Priority)priorityBox.getSelectedItem());
+        t.setType(((TaskItem.Type)typeBox.getSelectedItem()).name());
+        t.setState(((TaskItem.Status)statusBox.getSelectedItem()).name());
+        t.setPriority(((TaskItem.Priority)priorityBox.getSelectedItem()).name());
     }
     
 //    public boolean check() {
@@ -167,7 +166,7 @@ public class EditTaskPanel extends JPanelExt {
                 case 0:
                     df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 //                    df.setTimeZone(TimeZone.getTimeZone("GMT"));
-                    s = df.format(new Date(t.getId()));
+                    s = df.format(new Date(t.getID()));
                     break;
                 case 1:
                     df = new SimpleDateFormat("HH:mm:ss");
@@ -393,10 +392,11 @@ public class EditTaskPanel extends JPanelExt {
         if(JOptionPane.showConfirmDialog(null, "Удалить запись?",
                 "Предупреждение", JOptionPane.YES_NO_OPTION)==JOptionPane.NO_OPTION)
             return;
-        TimeLogger.getInstance().removeLogItem(tt.getId());
-        TimeLogger.getInstance().save();
+//        TimeLogger.getInstance().removeLogItem(tt.getID());
+//        TimeLogger.getInstance().save();
+        TaskStoreServiceConnector.getStore().deleteTimeLog(tt.getID());
         TimeTableModel m = new TimeTableModel();
-        m.setData(TimeLogger.getInstance().getTaskLog(t.getId()));
+        m.setData(TaskStoreServiceConnector.getStore().readTimeLogItems(t.getID()));
         jXTable1.setModel(m);
         this.repaint();
     }                                              
@@ -408,7 +408,8 @@ public class EditTaskPanel extends JPanelExt {
         String s = JOptionPane.showInputDialog("Коментарий:", tt.getComment());
         if(s==null) return;
         tt.setComment(s);
-        TimeLogger.getInstance().save();
+//        TimeLogger.getInstance().save();
+        TaskStoreServiceConnector.getStore().saveTimeLog(tt);
     }                                            
 
 

@@ -5,9 +5,6 @@ package org.taskonaut.convert.actions;
 
 import org.taskonaut.api.IMenuAction;
 import org.taskonaut.app.*;
-import org.taskonaut.db.TaskDB;
-import org.taskonaut.tasks.TaskList;
-import org.taskonaut.tasks.TimeLogger;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 
@@ -23,11 +20,12 @@ public class ImportFromXml implements IMenuAction {
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				TaskDB db = new TaskDB();
-				db.openStorage();
-				db.storeAllTasks(TaskList.getInstance().getTaskList().values());
-				db.storeAllTimeLog(TimeLogger.getInstance().getList());
-				db.closeStorage();
+				// TODO Переделать...
+//				TaskDB db = new TaskDB();
+//				db.openStorage();
+//				db.storeAllTasks(TaskList.getInstance().getTaskList().values());
+//				db.storeAllTimeLog(TimeLogger.getInstance().getList());
+//				db.closeStorage();
 				System.out.println("...");
 				return null;
 			}

@@ -10,6 +10,7 @@ import java.util.Collection;
 
 import org.taskonaut.api.tasks.ITaskStoreService;
 import org.taskonaut.api.tasks.TaskItem;
+import org.taskonaut.api.tasks.TaskItem.Status;
 import org.taskonaut.api.tasks.TimeLogItem;
 
 import com.amazon.carbonado.ConfigurationException;
@@ -344,4 +345,24 @@ public class TaskStoreService implements ITaskStoreService {
 		}
 	}
 
+	@Override
+	public List<TaskItem> getTasksForStatus(Status s) {
+		List<TaskItem> lt = new ArrayList<TaskItem>();
+		try {
+			Storage<TaskStore> store = repo.storageFor(TaskStore.class);
+			Cursor<TaskStore> c = store.query("state=?").with(s.name()).fetch();
+			while(c.hasNext()) {
+				lt.add(c.next());
+			}
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return lt;
+	}
+
+	
 }

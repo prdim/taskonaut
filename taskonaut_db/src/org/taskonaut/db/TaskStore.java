@@ -7,10 +7,6 @@ import com.amazon.carbonado.PrimaryKey;
 import com.amazon.carbonado.Storable;
 
 import org.taskonaut.api.tasks.TaskItem;
-import org.taskonaut.tasks.OneTask.Priority;
-import org.taskonaut.tasks.OneTask.Status;
-import org.taskonaut.tasks.OneTask.Type;
-import java.util.Date;
 
 /**
  *

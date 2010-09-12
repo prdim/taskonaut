@@ -14,8 +14,8 @@ Import-Package: com.jgoodies.forms.factories,
  org.osgi.service.event,
  org.osgi.util.tracker,
  org.taskonaut.api,
- org.taskonaut.app,
- org.taskonaut.tasks
+ org.taskonaut.api.tasks,
+ org.taskonaut.app
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.equinox.event;bundle-version="1.2.0"
 Export-Package: org.taskonaut.tasks.gui

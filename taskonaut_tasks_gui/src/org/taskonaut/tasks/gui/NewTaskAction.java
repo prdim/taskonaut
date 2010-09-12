@@ -12,10 +12,9 @@ import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 import org.osgi.service.event.Event;
 import org.taskonaut.api.IMenuAction;
+import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.app.MainApplication;
 import org.taskonaut.app.MainApplication.MessageTask;
-import org.taskonaut.tasks.OneTask;
-import org.taskonaut.tasks.TaskList;
 import org.taskonaut.tasks.gui.internal.Activator;
 
 /**
@@ -31,16 +30,17 @@ public class NewTaskAction implements IMenuAction {
 			@Override
 			protected Void doInBackground() throws Exception {
 				DefaultDialog d = new DefaultDialog(new JFrame(), true);
-				EditTaskPanel p = new EditTaskPanel(new OneTask());
+				EditTaskPanel p = new EditTaskPanel(TaskStoreServiceConnector.getStore().createNewTask(""));
 				d.setPanel(p);
 				d.setTitle("Создание новой задачи");
 				d.setVisible(true);
 				if(p.ok) {
 					setMessage("Новая задача создана");
-					TaskList.getInstance().putTask(p.getTask());
+//					TaskList.getInstance().putTask(p.getTask());
+					TaskStoreServiceConnector.getStore().saveTask(p.getTask());
 					Activator.getEventAdmin().postEvent(
 							new Event("org/taskonaut/tasks/gui/events/new_task", 
-									getProperties(p.getTask().getId())));
+									getProperties(p.getTask().getID())));
 					// TODO запись в БД
 				} else {
 					setMessage("Операция отменена пользователем");

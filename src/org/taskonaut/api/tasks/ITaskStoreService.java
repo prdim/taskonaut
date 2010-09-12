@@ -93,4 +93,11 @@ public interface ITaskStoreService {
 	 * @param task_id
 	 */
 	public void deleteAllTimeLog(long task_id);
+	
+	/**
+	 * Возвращает список задач с заданным статусом
+	 * @param s
+	 * @return
+	 */
+	public List<TaskItem> getTasksForStatus(TaskItem.Status s);
 }

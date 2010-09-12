@@ -14,17 +14,18 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import org.taskonaut.api.tasks.ActiveTask;
+import org.taskonaut.api.tasks.TaskItem;
+import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.app.MainApplication;
-import org.taskonaut.tasks.OneTask;
-import org.taskonaut.tasks.TaskList;
-import org.taskonaut.tasks.TimeLogItem;
-import org.taskonaut.tasks.TimeLogger;
 
 /**
 *
@@ -37,7 +38,7 @@ public class Tray /*implements IChangeDataListener*/{
 //   TaskonautView win;
    static Image image1;
    static Image image2;
-   Vector<OneTask> taskMenu = new Vector<OneTask>();
+   List<TaskItem> taskMenu = new ArrayList<TaskItem>();
 
    public static Tray getInstance() {
        if(me==null) {
@@ -80,11 +81,11 @@ public class Tray /*implements IChangeDataListener*/{
            };
            ActionListener stopListener = new ActionListener() {
                public void actionPerformed(ActionEvent e) {
-                   if (TimeLogger.getInstance().getActiveTask() == null) {
+                   if (!ActiveTask.getInstance().isActive()) {
                        return;
                    }
-                   TimeLogger.getInstance().stopTask();
-                   TimeLogger.getInstance().save();
+                   ActiveTask.getInstance().stop();
+                   ActiveTask.getInstance().save();
                    Tray.getInstance().message("Заканчиваю...");
                }
            };
@@ -116,23 +117,27 @@ public class Tray /*implements IChangeDataListener*/{
   
   public Menu getMenu() {
       Menu m = new Menu("Запустить");
-      taskMenu = TaskList.getInstance().getActiveTasks();
+      try {
+    	  taskMenu = TaskStoreServiceConnector.getStore().getTasksForStatus(TaskItem.Status.выполняется);
+      } catch (Exception e) {
+		e.printStackTrace();
+	}
       ActionListener listener = new ActionListener() {
            public void actionPerformed(ActionEvent e) {
                String s = e.getActionCommand();
-               for(OneTask i : taskMenu) {
+               for(TaskItem i : taskMenu) {
                    if(s.equals(i.getName())){
-                       if(TimeLogger.getInstance().getActiveTask()!=null) {
-                           TimeLogger.getInstance().stopTask();
-                           TimeLogger.getInstance().save();
+                       if(ActiveTask.getInstance().isActive()) {
+                           ActiveTask.getInstance().stop();
+                           ActiveTask.getInstance().save();
                        }
-                       TimeLogger.getInstance().startTask(i.getId());
+                       ActiveTask.getInstance().start(i.getID());
                        message("Выполняю " + i.getName());
                    }
                }
            }
        };
-       for(OneTask i : taskMenu) {
+       for(TaskItem i : taskMenu) {
            MenuItem item = new MenuItem(i.getName());
            item.addActionListener(listener);
            m.add(item);
@@ -167,22 +172,21 @@ public class Tray /*implements IChangeDataListener*/{
        }
 
        public void checkTask() {
-           TimeLogItem ti = TimeLogger.getInstance().getActiveTask();
-           if(ti==null) return;
+           if(!ActiveTask.getInstance().isActive()) return;
 
-           TimeLogger.getInstance().updateTask();
-           TimeLogger.getInstance().save();
+           ActiveTask.getInstance().check();
+           ActiveTask.getInstance().save();
 
-           OneTask t = TaskList.getInstance().getTask(ti.getTaskId());
+           TaskItem t = TaskStoreServiceConnector.getStore().readTask(ActiveTask.getInstance().getActiveTaskId());
            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
            df.setTimeZone(TimeZone.getTimeZone("GMT"));
-           trayIcon.setToolTip(t.getName() + " " + df.format(new Date(ti.getPeriod())));
+           trayIcon.setToolTip(t.getName() + " " + df.format(new Date(ActiveTask.getInstance().getTime())));
        }
 
        public void run() {
            Thread myThread = Thread.currentThread();
            while (my == myThread) {
-               if(TimeLogger.getInstance().getActiveTask()==null) {
+               if(!ActiveTask.getInstance().isActive()) {
                    trayIcon.setImage(image2);
                } else {
                    trayIcon.setImage(image1);
@@ -193,7 +197,7 @@ public class Tray /*implements IChangeDataListener*/{
                } catch (Exception ex) {
                    ex.printStackTrace();
                }
-               if(TimeLogger.getInstance().getActiveTask()==null) {
+               if(!ActiveTask.getInstance().isActive()) {
                    trayIcon.setImage(image1);
                } else {
                    trayIcon.setImage(image2);
