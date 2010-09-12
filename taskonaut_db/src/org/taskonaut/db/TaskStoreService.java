@@ -3,6 +3,8 @@
  */
 package org.taskonaut.db;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.io.File;
 import java.util.Collection;
 
@@ -11,6 +13,8 @@ import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TimeLogItem;
 
 import com.amazon.carbonado.ConfigurationException;
+import com.amazon.carbonado.Cursor;
+import com.amazon.carbonado.PersistException;
 import com.amazon.carbonado.Repository;
 import com.amazon.carbonado.RepositoryException;
 import com.amazon.carbonado.Storage;
@@ -38,16 +42,48 @@ public class TaskStoreService implements ITaskStoreService {
         repo.close();
     }
 
-	/* (non-Javadoc)
-	 * @see org.taskonaut.api.tasks.ITaskStoreService#readAllTasks()
+	/**
+	 * Создает новый TaskStore на основе объекта TaskItem
+	 * @param i
+	 * @return
 	 */
-	@Override
-	public Collection<TaskItem> readAllTasks() {
+	private TaskStore adaptee(TaskItem i) {
+		TaskStore t = (TaskStore) createNewTask(i.getName());
+		return adaptee(i,t);
+	}
+	
+	/**
+	 * Копирует TaskItems -> TaskStore
+	 * @param i
+	 * @param t
+	 * @return
+	 */
+	private TaskStore adaptee(TaskItem i, TaskStore t) {
+		t.setID(i.getID());
+		t.setName(i.getName());
+		t.setComment(i.getComment());
+		t.setExecute(i.getExecute());
+		t.setOwner(i.getOwner());
+		t.setPriority(i.getPriority());
+		t.setRelation_id(i.getRelation_id());
+		t.setState(i.getState());
+		t.setType(i.getType());
+		return t;
+	}
+	
+	private TimeLogStore adaptee(TimeLogItem i, TimeLogStore t) {
+		t.setComment(i.getComment());
+		t.setEnd(i.getEnd());
+		t.setID(i.getID());
+		t.setTaskId(i.getTaskId());
+		return t;
+	}
+	
+	private TimeLogStore adaptee(TimeLogItem i) {
+		TimeLogStore t = null;
 		try {
-			Storage<TaskStore> storage = repo.storageFor(TaskStore.class);
-			TaskStore t;
-			t = storage.query().loadOne();
-			System.out.println(t.getName());
+			Storage<TimeLogStore> store = repo.storageFor(TimeLogStore.class);
+			t = adaptee(i, store.prepare());
 		} catch (SupportException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,35 +91,89 @@ public class TaskStoreService implements ITaskStoreService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return null;
+		return t;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.taskonaut.api.tasks.ITaskStoreService#readAllTasks()
+	 */
+	@Override
+	public List<TaskItem> readAllTasks() {
+		List<TaskItem> ic = new ArrayList<TaskItem>();
+		try {
+			Storage<TaskStore> storage = repo.storageFor(TaskStore.class);
+			Cursor<TaskStore> c = storage.query().fetch();
+			while(c.hasNext()) {
+				ic.add(c.next());
+			}
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ic;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.taskonaut.api.tasks.ITaskStoreService#saveAllTasks(java.util.Collection)
 	 */
 	@Override
-	public void saveAllTasks(Collection<TaskItem> с) {
-		// TODO Auto-generated method stub
-
+	public void saveAllTasks(List<TaskItem> c) {
+		try {
+			Storage<TaskStore> storage = repo.storageFor(TaskStore.class);
+			TaskStore t = storage.prepare();
+			for(TaskItem i : c) {
+				t = adaptee(i,t);
+				if(!t.tryUpdate()) t.insert();
+			}
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
+
 
 	/* (non-Javadoc)
 	 * @see org.taskonaut.api.tasks.ITaskStoreService#readAllTimeLogItems()
 	 */
 	@Override
-	public Collection<TimeLogItem> readAllTimeLogItems() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<TimeLogItem> readAllTimeLogItems() {
+		List<TimeLogItem> lt = new ArrayList<TimeLogItem>();
+		try {
+			Storage<TimeLogStore> store = repo.storageFor(TimeLogStore.class);
+			Cursor<TimeLogStore> c = store.query().fetch();
+			while(c.hasNext()) {
+				lt.add(adaptee(c.next()));
+			}
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return lt;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.taskonaut.api.tasks.ITaskStoreService#readTimeLogItems(long)
 	 */
 	@Override
-	public Collection<TimeLogItem> readTimeLogItems(long task_id) {
+	public List<TimeLogItem> readTimeLogItems(long task_id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void saveAllTimeLogItems(List<TimeLogItem> c) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/* (non-Javadoc)
@@ -91,8 +181,14 @@ public class TaskStoreService implements ITaskStoreService {
 	 */
 	@Override
 	public void saveTask(TaskItem t) {
-		// TODO Auto-generated method stub
-
+		TaskStore s = adaptee(t);
+		try {
+			if (!s.tryUpdate())
+				s.insert();
+		} catch (PersistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -109,8 +205,19 @@ public class TaskStoreService implements ITaskStoreService {
 	 */
 	@Override
 	public TaskItem createNewTask(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		TaskStore t = null;
+		try {
+			t = repo.storageFor(TaskStore.class).prepare();
+			t.setName(name);
+			t.setID(System.currentTimeMillis());
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t;
 	}
 
 	/* (non-Javadoc)

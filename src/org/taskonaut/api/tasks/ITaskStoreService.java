@@ -1,6 +1,7 @@
 package org.taskonaut.api.tasks;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Интерфейс сервиса, который предоставляет услугу хранения списка задач
@@ -13,26 +14,32 @@ public interface ITaskStoreService {
 	 * Извлекает из БД все задачи
 	 * @return
 	 */
-	public Collection<TaskItem>readAllTasks();
+	public List<TaskItem>readAllTasks();
 	
 	/**
 	 * Сохраняет в БД список задач
-	 * @param с
+	 * @param c
 	 */
-	public void saveAllTasks(Collection<TaskItem> с);
+	public void saveAllTasks(List<TaskItem> c);
 	
 	/**
 	 * Извлекает из БД все записи о времени исполнения
 	 * @return
 	 */
-	public Collection<TimeLogItem>readAllTimeLogItems();
+	public List<TimeLogItem>readAllTimeLogItems();
 	
 	/**
 	 * Извлекает из БД логи конкретной задачи
 	 * @param task_id
 	 * @return
 	 */
-	public Collection<TimeLogItem>readTimeLogItems(long task_id);
+	public List<TimeLogItem>readTimeLogItems(long task_id);
+	
+	/**
+	 * Сохраняет список логов времени в БД
+	 * @param c
+	 */
+	public void saveAllTimeLogItems(List<TimeLogItem> c);
 	
 	/**
 	 * Сохранение задачи в БД

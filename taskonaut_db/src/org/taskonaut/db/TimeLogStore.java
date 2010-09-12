@@ -3,6 +3,8 @@
  */
 package org.taskonaut.db;
 
+import org.taskonaut.api.tasks.TimeLogItem;
+
 import com.amazon.carbonado.PrimaryKey;
 import com.amazon.carbonado.Storable;
 
@@ -11,16 +13,6 @@ import com.amazon.carbonado.Storable;
  * @author ProlubnikovDA
  */
 @PrimaryKey("ID")
-public interface TimeLogStore extends Storable {
-    long getID();
-    void setID(long id);
+public abstract class TimeLogStore extends TimeLogItem implements Storable {
 
-    String getComment();
-    void setComment(String comment);
-
-    long getEnd();
-    void setEnd(long end);
-
-    long getTaskId();
-    void setTaskId(long taskId);
 }

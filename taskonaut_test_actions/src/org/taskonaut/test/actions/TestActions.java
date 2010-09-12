@@ -4,6 +4,7 @@
 package org.taskonaut.test.actions;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import org.jdesktop.application.Action;
 import org.taskonaut.api.IMenuAction;
@@ -25,7 +26,10 @@ public class TestActions implements IMenuAction {
 //		TaskItem t = TaskFactory.createNewTask("test task!!!");
 //		t.setPriority(TaskItem.Priority.критично.name());
 //		FileUtils.beanToXML(t, "./test.xml");
-		TaskStoreServiceConnector.getStore().readAllTasks();
+		List<TaskItem> i = TaskStoreServiceConnector.getStore().readAllTasks();
+		for(TaskItem t : i) {
+			System.out.println(t.getName());
+		}
 	}
 
 	@Override

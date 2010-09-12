@@ -17,9 +17,9 @@ public abstract class TimeLogItem {
 
     public abstract void setEnd(long end);
 
-    public abstract long getId();
+    public abstract long getID();
 
-    public abstract void setId(long id);
+    public abstract void setID(long id);
 
     public abstract long getTaskId();
 
@@ -30,6 +30,6 @@ public abstract class TimeLogItem {
     }
 
     public long getPeriod() {
-        return getEnd() - getId();
+        return getEnd() - getID();
     }
 }
