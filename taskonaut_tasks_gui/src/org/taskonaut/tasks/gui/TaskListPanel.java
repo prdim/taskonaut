@@ -48,6 +48,75 @@ public class TaskListPanel extends JPanelExt {
 		attachTableModel();
 		eventHandler = new ChangeTaskEventHandler();
 		Activator.regEventHandler(eventHandler, getHandlerServiceProperties("org/taskonaut/tasks/gui/events/*"));
+		
+		JPopupMenu menu = new JPopupMenu();
+		JMenuItem item1 = new JMenuItem();
+		item1.setText("Редактировать");
+		item1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+						.getData().get(
+								xTable1.convertRowIndexToModel(xTable1
+										.getSelectedRow()));
+				MainApplication
+						.getInstance()
+						.getContext()
+						.getTaskService()
+						.execute(new TaskEdit(MainApplication.getInstance(), t));
+			}
+		});
+		menu.add(item1);
+		
+		JMenuItem item2 = new JMenuItem();
+		item2.setText("Запустить");
+		item2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+				.getData().get(
+						xTable1.convertRowIndexToModel(xTable1
+								.getSelectedRow()));
+				ActiveTask.getInstance().start(t.getID());
+				ActiveTask.getInstance().save();
+			}
+		});
+		menu.add(item2);
+		
+		JMenuItem item3 = new JMenuItem();
+		item3.setText("Остановить");
+		item3.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ActiveTask.getInstance().stop();
+				ActiveTask.getInstance().save();
+			}
+		});
+		menu.add(item3);
+		
+		JMenuItem item4 = new JMenuItem();
+		item4.setText("Удалить");
+		item4.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+				.getData().get(
+						xTable1.convertRowIndexToModel(xTable1
+								.getSelectedRow()));
+				MainApplication
+				.getInstance()
+				.getContext()
+				.getTaskService()
+				.execute(new TaskDelete(MainApplication.getInstance(), t));
+			}
+		});
+		menu.add(new JPopupMenu.Separator());
+		menu.add(item4);
+		xTable1.setComponentPopupMenu(menu);
 	}
 	
 	private void attachTableModel() {
@@ -153,7 +222,47 @@ public class TaskListPanel extends JPanelExt {
 			result.put("task_id", id);
 			return result;
 		}
+	}
+	
+	/**
+	 * Таск удаления задачи
+	 * @author spec
+	 *
+	 */
+	private class TaskDelete extends Task<Void, Void> {
+		private TaskItem ts = null;
+
+		public TaskDelete(Application application) {
+			super(application);
+		}
 		
+		public TaskDelete(Application app, TaskItem t) {
+			super(app);
+			ts = t;
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			if(ts==null) return null;
+			if(JOptionPane.showConfirmDialog(null, "Удалить задачу \"" + ts.getName() + "\"?",
+	                "Предупреждение", JOptionPane.YES_NO_OPTION)==JOptionPane.NO_OPTION) {
+				setMessage("Операция отменена пользователем");
+	            return null;
+			}
+			TaskStoreServiceConnector.getStore().deleteAllTimeLog(ts.getID());
+			TaskStoreServiceConnector.getStore().deleteTask(ts.getID());
+			Activator.getEventAdmin().postEvent(
+					new Event("org/taskonaut/tasks/gui/events/delete_task", 
+							getProperties(ts.getID())));
+			setMessage("Задача удалена");
+			return null;
+		}
+		
+		private Dictionary<String, Object> getProperties(Long id) {
+			Dictionary<String, Object> result = new Hashtable<String, Object>();
+			result.put("task_id", id);
+			return result;
+		}
 	}
 	
 	/**
