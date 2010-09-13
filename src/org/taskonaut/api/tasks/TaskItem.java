@@ -11,6 +11,18 @@ public abstract class TaskItem {
 	public enum Type {задача, проект, мысль};
     public enum Status {запланирована, выполняется, выполнена, отложена, отменена};
     public enum Priority {низкий, средний, высокий, критично};
+    
+    public Type getTypeId() {
+    	return Type.valueOf(getType());
+    }
+    
+    public Status getStateId() {
+    	return Status.valueOf(getState());
+    }
+    
+    public Priority getPriorityId() {
+    	return Priority.valueOf(getPriority());
+    }
 	
 	public abstract long getID();
 	public abstract void setID(long id);

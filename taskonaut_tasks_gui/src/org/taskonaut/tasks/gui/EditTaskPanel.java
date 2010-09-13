@@ -80,11 +80,11 @@ public class EditTaskPanel extends JPanelExt {
         ownerField.setText(t.getOwner());
         startDate.setDate(new Date(t.getID()));
         typeBox.setModel(new DefaultComboBoxModel(TaskItem.Type.values()));
-        typeBox.setSelectedItem(t.getType());
+        typeBox.setSelectedItem(t.getTypeId());
         statusBox.setModel(new DefaultComboBoxModel(TaskItem.Status.values()));
-        statusBox.setSelectedItem(t.getState());
+        statusBox.setSelectedItem(t.getStateId());
         priorityBox.setModel(new DefaultComboBoxModel(TaskItem.Priority.values()));
-        priorityBox.setSelectedItem(t.getPriority());
+        priorityBox.setSelectedItem(t.getPriorityId());
         TimeTableModel m = new TimeTableModel();
         m.setData(TaskStoreServiceConnector.getStore().readTimeLogItems(t.getID()));
         jXTable1.setModel(m);

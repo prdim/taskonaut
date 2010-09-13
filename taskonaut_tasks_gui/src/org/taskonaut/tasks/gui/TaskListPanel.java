@@ -5,6 +5,8 @@ package org.taskonaut.tasks.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -22,6 +24,7 @@ import org.jdesktop.swingx.*;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.taskonaut.api.tasks.ActiveTask;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.app.MainApplication;
@@ -201,7 +204,14 @@ public class TaskListPanel extends JPanelExt {
 		public Component getTableCellRendererComponent(JTable table,
 				Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 			JPanel p = new JPanel(new BorderLayout());
-			if(TaskItem.Status.запланирована.equals(value)) {
+			TaskItem t = ((TaskListTableModel)xTable1.getModel()).
+				getData().get(xTable1.convertRowIndexToModel(row));
+			if(ActiveTask.getInstance().getActiveTaskId() == t.getID()) {
+				Icon ico = MainApplication.getInstance().getContext().
+				getResourceMap(TaskListPanel.class).getIcon("ico_play");
+				p.add(new JLabel(ico));
+				p.setToolTipText("Текущая");
+			} else if(TaskItem.Status.запланирована.equals(value)) {
 				Icon ico = MainApplication.getInstance().getContext().
 					getResourceMap(TaskListPanel.class).getIcon("ico_chronometer");
 				p.add(new JLabel(ico));
@@ -323,15 +333,19 @@ public class TaskListPanel extends JPanelExt {
 
 		@Override
 		public Object getValueAt(int r, int c) {
+			SimpleDateFormat df;
+			String s = "";
 			switch(c) {
 			case 0:
-				return data.get(r).getState();
+				return data.get(r).getStateId();
 			case 1:
-				return data.get(r).getPriority();
+				return data.get(r).getPriorityId();
 			case 2:
 				return data.get(r).getName();
 			case 3:
-				return data.get(r).getExecute();
+				df = new SimpleDateFormat("yyyy-MM-dd");
+				s = df.format(new Date(data.get(r).getExecute()));
+				return s;
 			}
 			return data.get(r).getName();
 		}

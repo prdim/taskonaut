@@ -8,6 +8,8 @@ Bundle-Vendor: Dmitry Prolubnikov
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.jdesktop.application,
  org.osgi.framework;version="1.3.0",
+ org.osgi.service.event,
+ org.osgi.util.tracker,
  org.taskonaut.api,
  org.taskonaut.api.tasks,
  org.taskonaut.app,

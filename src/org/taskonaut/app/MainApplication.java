@@ -136,6 +136,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 			JMenuItem menuItem = new JMenuItem();
 			menuItem.setAction(getContext().getActionMap(i).get(i.getActionName()));
 			menuItem.setIcon(null);
+			// TODO Concurent modification exception!!!
 			mn.add(menuItem);
 		}
 	}

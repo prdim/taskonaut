@@ -224,7 +224,8 @@ public class TaskStoreService implements ITaskStoreService {
 	public void saveTimeLog(TimeLogItem t) {
 		TimeLogStore s = adaptee(t);
 		try {
-			if(s.tryUpdate()) s.insert();
+//			System.out.println("save " + s.getTaskId() + " - " + s.getPeriod());
+			if(!s.tryUpdate()) s.insert();
 		} catch (PersistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -241,6 +242,14 @@ public class TaskStoreService implements ITaskStoreService {
 			t = repo.storageFor(TaskStore.class).prepare();
 			t.setName(name);
 			t.setID(System.currentTimeMillis());
+			// Определяем значения по умолчанию для новой задачи
+			t.setComment("");
+			t.setExecute(System.currentTimeMillis());
+			t.setOwner("");
+			t.setPriority(TaskItem.Priority.средний.name());
+			t.setRelation_id(0);
+			t.setState(TaskItem.Status.запланирована.name());
+			t.setType(TaskItem.Type.задача.name());
 		} catch (SupportException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -263,6 +272,7 @@ public class TaskStoreService implements ITaskStoreService {
 			t.setEnd(end);
 			t.setTaskId(task_id);
 			t.setComment("");
+			saveTimeLog(t);
 		} catch (SupportException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
