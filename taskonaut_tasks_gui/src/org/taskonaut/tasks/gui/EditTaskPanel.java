@@ -6,20 +6,26 @@ package org.taskonaut.tasks.gui;
 import com.jgoodies.forms.layout.*;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXTable;
+import org.osgi.service.event.Event;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.api.tasks.TimeLogItem;
+import org.taskonaut.tasks.gui.internal.Activator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -43,6 +49,25 @@ public class EditTaskPanel extends JPanelExt {
         initComponents();
         this.t = t;
         fillData();
+        
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem item1 = new JMenuItem();
+        item1.setText("Редактировать");
+        item1.addActionListener(new java.awt.event.ActionListener() {
+        	public void actionPerformed(java.awt.event.ActionEvent evt) {
+        		editMenuItemActionPerformed(evt);
+        	}
+        });
+        menu.add(item1);
+        JMenuItem item2 = new JMenuItem();
+        item2.setText("Удалить");
+        item2.addActionListener(new java.awt.event.ActionListener() {
+        	public void actionPerformed(java.awt.event.ActionEvent evt) {
+        		deleteMenuItemActionPerformed(evt);
+        	}
+        });
+        menu.add(item2);
+        jXTable1.setComponentPopupMenu(menu);
     }
 
     public void setTask(TaskItem t) {
@@ -60,9 +85,20 @@ public class EditTaskPanel extends JPanelExt {
     	if(nameField.getText().equals("")) return false;
         if(endDate.getDate().before(startDate.getDate())) return false;
         ok = true;
+        readData();
+        TaskStoreServiceConnector.getStore().saveTask(t);
+		Activator.getEventAdmin().postEvent(
+				new Event("org/taskonaut/tasks/gui/events/edit_task", 
+						getProperties(t.getID())));
         return true;
 	}
 
+    private Dictionary<String, Object> getProperties(Long id) {
+		Dictionary<String, Object> result = new Hashtable<String, Object>();
+		result.put("task_id", id);
+		return result;
+	}
+    
 	@Override
 	public void beforeClose() {
 //		ok = false;

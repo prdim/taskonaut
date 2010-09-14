@@ -45,6 +45,7 @@ public class Tray /* implements IChangeDataListener */{
 	static Image image1;
 	static Image image2;
 	List<TaskItem> taskMenu = new ArrayList<TaskItem>();
+	List<TaskItem> lastTaskMenu = new ArrayList<TaskItem>();
 
 	public static Tray getInstance() {
 		if (me == null) {
@@ -63,7 +64,7 @@ public class Tray /* implements IChangeDataListener */{
 	// this.win = win;
 	// }
 
-	public void sTrayShow() {
+	public void sTrayShow() { 
 		if (SystemTray.isSupported()) {
 			System.out.println("Tray icon size: "
 					+ SystemTray.getSystemTray().getTrayIconSize().getHeight());
@@ -111,6 +112,7 @@ public class Tray /* implements IChangeDataListener */{
 			itemProps.addActionListener(stopListener);
 			popup.add(itemProps);
 			popup.add(getMenu());
+			popup.add(getLastMenu());
 			MenuItem defaultItem = new MenuItem("Выход");
 			defaultItem.addActionListener(listener);
 			popup.add(defaultItem);
@@ -155,6 +157,9 @@ public class Tray /* implements IChangeDataListener */{
 							ActiveTask.getInstance().save();
 						}
 						ActiveTask.getInstance().start(i.getID());
+						addLastTask(i);
+						trayIcon.getPopupMenu().remove(2);
+						trayIcon.getPopupMenu().insert(getLastMenu(), 2);
 						message("Выполняю " + i.getName());
 					}
 				}
@@ -166,6 +171,44 @@ public class Tray /* implements IChangeDataListener */{
 			m.add(item);
 		}
 		return m;
+	}
+	
+	public Menu getLastMenu() {
+		Menu m = new Menu("Последние");
+		ActionListener listener = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String s = e.getActionCommand();
+				for (TaskItem i : lastTaskMenu) {
+					if (s.equals(i.getName())) {
+						if (ActiveTask.getInstance().isActive()) {
+							ActiveTask.getInstance().stop();
+							ActiveTask.getInstance().save();
+						}
+						ActiveTask.getInstance().start(i.getID());
+						message("Выполняю " + i.getName());
+					}
+				}
+			}
+		};
+		for (TaskItem i : lastTaskMenu) {
+			MenuItem item = new MenuItem(i.getName());
+			item.addActionListener(listener);
+			m.add(item);
+		}
+		return m;
+	}
+	
+	public void addLastTask(TaskItem t) {
+		boolean f = false;
+		for(TaskItem i : lastTaskMenu) {
+			if(i.getID() == t.getID()) {
+				f = true;
+				break;
+			}
+		}
+		if(!f) {
+			lastTaskMenu.add(t);
+		}
 	}
 
 	public void setOfflineIcon() {
