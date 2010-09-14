@@ -79,6 +79,8 @@ public class TaskListPanel extends JPanelExt {
 				.getData().get(
 						xTable1.convertRowIndexToModel(xTable1
 								.getSelectedRow()));
+				if(ActiveTask.getInstance().isActive())
+					ActiveTask.getInstance().stop();
 				ActiveTask.getInstance().start(t.getID());
 				ActiveTask.getInstance().save();
 			}
