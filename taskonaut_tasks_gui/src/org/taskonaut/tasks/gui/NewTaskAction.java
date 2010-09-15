@@ -30,7 +30,7 @@ public class NewTaskAction implements IMenuAction {
 			@Override
 			protected Void doInBackground() throws Exception {
 				DefaultDialog d = new DefaultDialog(new JFrame(), true);
-				EditTaskPanel p = new EditTaskPanel(TaskStoreServiceConnector.getStore().createNewTask(""));
+				EditTaskPanel p = new EditTaskPanel(TaskStoreServiceConnector.getStore().createNewTask(""), true);
 				d.setPanel(p);
 				d.setTitle("Создание новой задачи");
 				d.setVisible(true);

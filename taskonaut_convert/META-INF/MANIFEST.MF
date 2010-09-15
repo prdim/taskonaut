@@ -10,6 +10,7 @@ Import-Package: com.amazon.carbonado,
  org.jdesktop.application,
  org.osgi.framework;version="1.3.0",
  org.taskonaut.api,
+ org.taskonaut.api.tasks,
  org.taskonaut.app,
  org.taskonaut.db
 Bundle-ActivationPolicy: lazy

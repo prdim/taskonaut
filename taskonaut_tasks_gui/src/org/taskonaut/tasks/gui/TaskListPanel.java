@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import com.jgoodies.forms.factories.*;
@@ -122,7 +123,14 @@ public class TaskListPanel extends JPanelExt {
 	}
 	
 	private void attachTableModel() {
-		xTable1.setModel(new TaskListTableModel());
+		// TODO Вылетает исключение при обновлении данных.
+		xTable1.setVisible(false);
+		xTable1.setModel(new DefaultTableModel());
+//		System.out.println("-1-");
+		TaskListTableModel t = new TaskListTableModel();
+//		System.out.println("-2-");
+		xTable1.setModel(t);
+//		System.out.println("-3-");
 		xTable1.getColumnModel().getColumn(0).setCellRenderer(new StatusCellRenderer());
 		xTable1.getColumnModel().getColumn(1).setCellRenderer(new PriorityCellRenderer());
 		xTable1.setColumnControlVisible(true);
@@ -131,6 +139,7 @@ public class TaskListPanel extends JPanelExt {
 		xTable1.packAll();
 		xTable1.getColumnModel().getColumn(0).setPreferredWidth(24);
 		xTable1.getColumnModel().getColumn(1).setPreferredWidth(24);
+		xTable1.setVisible(true);
 	}
 
 	/* (non-Javadoc)
@@ -186,7 +195,7 @@ public class TaskListPanel extends JPanelExt {
 	 * @author spec
 	 *
 	 */
-	private class TaskEdit extends Task<Void, Void> {
+	public class TaskEdit extends Task<Void, Void> {
 		private TaskItem ts;
 
 		public TaskEdit(Application application) {
@@ -201,7 +210,7 @@ public class TaskListPanel extends JPanelExt {
 		@Override
 		protected Void doInBackground() throws Exception {
 //			DefaultDialog d = new DefaultDialog(new JFrame(), true);
-			EditTaskPanel p = new EditTaskPanel(ts);
+			EditTaskPanel p = new EditTaskPanel(ts, false);
 			InternalFrameDialog d = new InternalFrameDialog(p);
 			d.setTitle("Редактирование задачи " + ts.getName());
 			((MainApplication)MainApplication.getInstance()).addInternalFrame(d);
@@ -234,7 +243,7 @@ public class TaskListPanel extends JPanelExt {
 	 * @author spec
 	 *
 	 */
-	private class TaskDelete extends Task<Void, Void> {
+	public class TaskDelete extends Task<Void, Void> {
 		private TaskItem ts = null;
 
 		public TaskDelete(Application application) {

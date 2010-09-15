@@ -39,13 +39,15 @@ import javax.swing.table.AbstractTableModel;
 public class EditTaskPanel extends JPanelExt {
     private TaskItem t = null;
     public boolean ok = false;
+    private boolean isNew = false;
     
     /** Creates new form editTaskPanel */
     public EditTaskPanel() {
         initComponents();
     }
 
-    public EditTaskPanel(TaskItem t) {
+    public EditTaskPanel(TaskItem t, boolean isNew) {
+    	this.isNew = isNew;
         initComponents();
         this.t = t;
         fillData();
@@ -85,11 +87,13 @@ public class EditTaskPanel extends JPanelExt {
     	if(nameField.getText().equals("")) return false;
         if(endDate.getDate().before(startDate.getDate())) return false;
         ok = true;
-        readData();
-        TaskStoreServiceConnector.getStore().saveTask(t);
-		Activator.getEventAdmin().postEvent(
-				new Event("org/taskonaut/tasks/gui/events/edit_task", 
-						getProperties(t.getID())));
+		if (!isNew) {
+			readData();
+			TaskStoreServiceConnector.getStore().saveTask(t);
+			Activator.getEventAdmin().postEvent(
+					new Event("org/taskonaut/tasks/gui/events/edit_task",
+							getProperties(t.getID())));
+		}
         return true;
 	}
 

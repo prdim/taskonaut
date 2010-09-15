@@ -86,13 +86,11 @@ Export-Package: com.amazon.carbonado,
  org.joda.time.format,
  org.joda.time.tz
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: javax.swing.border,
- javax.management,
- javax.swing,
- javax.transaction.xa,
- javax.swing.filechooser,
- org.apache.commons.logging; version="1.0.4",
- org.apache.tools.ant.types,
- org.apache.tools.ant,
+Import-Package: javax.management,
  javax.sql,
- javax.swing.table
+ javax.swing,
+ javax.swing.border,
+ javax.swing.filechooser,
+ javax.swing.table,
+ javax.transaction.xa,
+ org.apache.commons.logging;version="1.0.4"
