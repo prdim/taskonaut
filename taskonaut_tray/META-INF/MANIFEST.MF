@@ -13,6 +13,7 @@ Import-Package: org.jdesktop.application,
  org.taskonaut.api,
  org.taskonaut.api.tasks,
  org.taskonaut.app,
+ org.taskonaut.tasks.gui,
  org.taskonaut.util
 Bundle-ActivationPolicy: lazy
 Export-Package: org.taskonaut.tray

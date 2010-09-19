@@ -31,6 +31,7 @@ import org.taskonaut.api.tasks.ActiveTask;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.app.MainApplication;
+import org.taskonaut.tasks.gui.NewTaskAction;
 import org.taskonaut.tray.internal.Activator;
 
 /**
@@ -44,8 +45,10 @@ public class Tray /* implements IChangeDataListener */{
 	// TaskonautView win;
 	static Image image1;
 	static Image image2;
+	static Image image3;
 	List<TaskItem> taskMenu = new ArrayList<TaskItem>();
 	List<TaskItem> lastTaskMenu = new ArrayList<TaskItem>();
+	private double traySize = 0;
 
 	public static Tray getInstance() {
 		if (me == null) {
@@ -66,8 +69,7 @@ public class Tray /* implements IChangeDataListener */{
 
 	public void sTrayShow() { 
 		if (SystemTray.isSupported()) {
-			System.out.println("Tray icon size: "
-					+ SystemTray.getSystemTray().getTrayIconSize().getHeight());
+			traySize = SystemTray.getSystemTray().getTrayIconSize().getHeight();
 			image1 = Toolkit.getDefaultToolkit()
 					.getImage(
 							this.getClass().getResource(
@@ -75,6 +77,9 @@ public class Tray /* implements IChangeDataListener */{
 			image2 = Toolkit.getDefaultToolkit().getImage(
 					this.getClass().getResource(
 							"resources/icons/clock_play-16.png"));
+			image3 = Toolkit.getDefaultToolkit().getImage(
+					this.getClass().getResource(
+							"resources/icons/clock_stop-16.png"));
 			// image1 = ((ImageIcon)MainApplication.getInstance().getContext().
 			// getResourceMap(Tray.class).getIcon("ico_main")).getImage();
 			// image2 = ((ImageIcon)MainApplication.getInstance().getContext().
@@ -105,9 +110,20 @@ public class Tray /* implements IChangeDataListener */{
 					Tray.getInstance().message("Заканчиваю...");
 				}
 			};
+				ActionListener createTaskListener = new ActionListener() {
+	
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						MainApplication.getInstance().getContext().getTaskService().execute(new NewTaskAction().newTaskAction());
+					}
+					
+				};
 
 			PopupMenu popup = new PopupMenu();
 
+			MenuItem createTask = new MenuItem("Новая задача");
+			createTask.addActionListener(createTaskListener);
+			popup.add(createTask);
 			MenuItem itemProps = new MenuItem("Остановить");
 			itemProps.addActionListener(stopListener);
 			popup.add(itemProps);
@@ -158,8 +174,8 @@ public class Tray /* implements IChangeDataListener */{
 						}
 						ActiveTask.getInstance().start(i.getID());
 						addLastTask(i);
-						trayIcon.getPopupMenu().remove(2);
-						trayIcon.getPopupMenu().insert(getLastMenu(), 2);
+						trayIcon.getPopupMenu().remove(3);
+						trayIcon.getPopupMenu().insert(getLastMenu(), 3);
 						message("Выполняю " + i.getName());
 					}
 				}
@@ -290,8 +306,8 @@ public class Tray /* implements IChangeDataListener */{
 
 		@Override
 		public void handleEvent(Event event) {
-			trayIcon.getPopupMenu().remove(1);
-			trayIcon.getPopupMenu().insert(getMenu(), 1);
+			trayIcon.getPopupMenu().remove(2);
+			trayIcon.getPopupMenu().insert(getMenu(), 2);
 		}
 
 	}
