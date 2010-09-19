@@ -39,6 +39,7 @@ import org.taskonaut.tasks.gui.internal.Activator;
  */
 public class TaskListPanel extends JPanelExt {
 	private ChangeTaskEventHandler eventHandler;
+	private FilterPanel filter = new FilterPanel();
 	
 	/**
 	 * Конструктор
@@ -187,7 +188,14 @@ public class TaskListPanel extends JPanelExt {
 	 * @param e
 	 */
 	private void filterButtonActionPerformed(ActionEvent e) {
-		// TODO add your code here
+		DefaultDialog d = new DefaultDialog(new Frame(), true);
+		d.setPanel(filter);
+		d.setTitle("Фильтр списка задач");
+		d.setVisible(true);
+		if(d.getReturnStatus()==DefaultDialog.OK) {
+			attachTableModel();
+			contentPanel.repaint();
+		}
 	}
 	
 	/**
@@ -418,7 +426,8 @@ public class TaskListPanel extends JPanelExt {
 //				data.add(TaskList.getInstance().getTask(i));
 //			}
 			for(TaskItem i : TaskStoreServiceConnector.getStore().readAllTasks()) {
-				data.add(i);
+				if(!filter.isFiltered(i))
+					data.add(i);
 			}
 		}
 		

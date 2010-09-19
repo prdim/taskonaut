@@ -22,6 +22,9 @@ import javax.swing.JPanel;
  *
  */
 public class DefaultDialog extends JDialog {
+	public static final int OK = 1;
+	public static final int CANCEL = 0;
+	private int status = 0;
 	private JPanelExt panel;
 	
 	public DefaultDialog(Frame owner, boolean modal) {
@@ -34,6 +37,10 @@ public class DefaultDialog extends JDialog {
 		initComponents();
 	}
 	
+	public int getReturnStatus() {
+		return status;
+	}
+	
 	public void setPanel(JPanelExt p) {
 		contentPanel.add(p);
 		pack();
@@ -44,11 +51,13 @@ public class DefaultDialog extends JDialog {
 	private void okButtonActionPerformed(ActionEvent e) {
 		if(!panel.checkOk()) return;
 		panel.beforeClose();
+		status = OK;
 		this.dispose();
 	}
 
 	private void cancelButtonActionPerformed(ActionEvent e) {
 		panel.beforeClose();
+		status = CANCEL;
 		this.dispose();
 	}
 
