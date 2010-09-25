@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <java version="1.6.0_20" class="java.beans.XMLDecoder"> 
  <object class="com.jformdesigner.model.FormModel"> 
+  <void method="setProperty"> 
+   <string>i18n.bundleName</string> 
+   <string>EditTaskPanel</string> 
+  </void> 
+  <void method="setProperty"> 
+   <string>i18n.autoExternalize</string> 
+   <boolean>true</boolean> 
+  </void> 
+  <void method="setProperty"> 
+   <string>i18n.keyPrefix</string> 
+   <string>EditTaskPanel</string> 
+  </void> 
   <void property="contentType"> 
    <string>form/swing</string> 
   </void> 

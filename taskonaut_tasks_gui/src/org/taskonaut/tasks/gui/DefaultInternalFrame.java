@@ -65,9 +65,11 @@ public class DefaultInternalFrame extends JInternalFrame implements ParentPanel 
 			}
         });
 		this.pe = pe;
+//		pack();
 		pe.setParentPanel(this);
 		setLayout(new BorderLayout());
 		add(pe, BorderLayout.CENTER);
+//		pe.invalidate();
 		pack();
 	}
 	
