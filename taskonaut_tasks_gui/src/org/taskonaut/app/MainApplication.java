@@ -27,7 +27,7 @@ import org.taskonaut.api.IChangeDataListener;
 import org.taskonaut.api.IMenuAction;
 import org.taskonaut.app.StatusBar;
 import org.taskonaut.app.MDIDesktopPane;
-import org.taskonaut.internal.Activator;
+import org.taskonaut.tasks.gui.internal.Activator;
 
 /**
  * @author spec

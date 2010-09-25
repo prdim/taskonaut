@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.taskonaut.internal;
+package org.taskonaut.app;
 
 import java.util.ArrayList;
 import java.util.List;

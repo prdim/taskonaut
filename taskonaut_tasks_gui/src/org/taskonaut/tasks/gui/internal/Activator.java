@@ -7,11 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.jdesktop.application.Application;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.taskonaut.api.IMenuAction;
+import org.taskonaut.api.IMenuService;
 import org.taskonaut.api.MenuConnector;
+import org.taskonaut.app.MenuService;
+import org.taskonaut.app.MainApplication;
 import org.taskonaut.tasks.gui.NewTaskAction;
 import org.taskonaut.tasks.gui.TaskListAction;
 import org.osgi.service.event.EventAdmin;
@@ -26,9 +30,15 @@ public class Activator implements BundleActivator {
 	private ServiceTracker serviceTracker;
 	private static Map<EventHandler,ServiceRegistration> eventHandlers = 
 					new HashMap<EventHandler,ServiceRegistration>();
+	private static MenuService menu;
+	private ServiceRegistration registration;
 
 	static BundleContext getContext() {
 		return context;
+	}
+	
+	public static synchronized MenuService getMenuService() {
+		return menu;
 	}
 	
 	public static EventAdmin getEventAdmin() {
@@ -61,6 +71,11 @@ public class Activator implements BundleActivator {
 		serviceTracker = new ServiceTracker(context, EventAdmin.class.getName(), null);
 		serviceTracker.open();
 		eventAdmin = (EventAdmin) serviceTracker.getService();
+		
+		menu = new MenuService();
+		registration = context.registerService(IMenuService.class.getName(), menu, null);
+		Application.launch(MainApplication.class, new String[] {});
+		
 		System.out.println("GUI service started");
 	}
 
@@ -70,6 +85,8 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
+		menu.clearAllListeners();
+		registration.unregister();
 		con.close();
 //		reg.unregister();
 		
