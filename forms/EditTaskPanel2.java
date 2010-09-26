@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import com.jgoodies.forms.layout.*;
 import org.jdesktop.swingx.*;
@@ -14,6 +15,10 @@ import org.jdesktop.swingx.*;
 public class EditTaskPanel2 extends JPanel {
 	public EditTaskPanel2() {
 		initComponents();
+	}
+
+	private void nameFieldKeyPressed(KeyEvent e) {
+		// TODO add your code here
 	}
 
 	private void initComponents() {
@@ -52,6 +57,14 @@ public class EditTaskPanel2 extends JPanel {
 		//---- label1 ----
 		label1.setText("text");
 		add(label1, cc.xy(1, 1));
+
+		//---- nameField ----
+		nameField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				nameFieldKeyPressed(e);
+			}
+		});
 		add(nameField, cc.xy(3, 1));
 
 		//======== panel1 ========
@@ -94,38 +107,24 @@ public class EditTaskPanel2 extends JPanel {
 
 		//======== panel2 ========
 		{
-			panel2.setLayout(new GridBagLayout());
-			((GridBagLayout)panel2.getLayout()).columnWidths = new int[] {0, 0, 0, 0, 0, 0, 0};
-			((GridBagLayout)panel2.getLayout()).rowHeights = new int[] {0, 0};
-			((GridBagLayout)panel2.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-			((GridBagLayout)panel2.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
+			panel2.setLayout(new FormLayout(
+				"5*(pref, $lcgap), pref",
+				"fill:pref"));
 
 			//---- label5 ----
 			label5.setText("text");
-			panel2.add(label5, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(0, 0, 0, 5), 0, 0));
-			panel2.add(statusBox, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(0, 0, 0, 5), 0, 0));
+			panel2.add(label5, cc.xy(1, 1));
+			panel2.add(statusBox, cc.xy(3, 1));
 
 			//---- label6 ----
 			label6.setText("text");
-			panel2.add(label6, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(0, 0, 0, 5), 0, 0));
-			panel2.add(typeBox, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(0, 0, 0, 5), 0, 0));
+			panel2.add(label6, cc.xy(5, 1));
+			panel2.add(typeBox, cc.xy(7, 1));
 
 			//---- label7 ----
 			label7.setText("text");
-			panel2.add(label7, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(0, 0, 0, 5), 0, 0));
-			panel2.add(relationTask, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0,
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(0, 0, 0, 0), 0, 0));
+			panel2.add(label7, cc.xy(9, 1));
+			panel2.add(relationTask, cc.xy(11, 1));
 		}
 		add(panel2, cc.xywh(1, 9, 3, 1));
 

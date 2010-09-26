@@ -21,7 +21,7 @@ import javax.swing.JPanel;
  * @author spec
  *
  */
-public class DefaultDialog extends JDialog {
+public class DefaultDialog extends JDialog implements ParentPanel {
 	public static final int OK = 1;
 	public static final int CANCEL = 0;
 	private int status = 0;
@@ -46,6 +46,7 @@ public class DefaultDialog extends JDialog {
 		pack();
 		setLocationRelativeTo(getOwner());
 		panel = p;
+		panel.setParentPanel(this);
 	}
 
 	private void okButtonActionPerformed(ActionEvent e) {
@@ -126,4 +127,14 @@ public class DefaultDialog extends JDialog {
 	private JButton okButton;
 	private JButton cancelButton;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
+
+	@Override
+	public void onCloseOk() {
+		okButtonActionPerformed(null);
+	}
+
+	@Override
+	public void onCloseCancel() {
+		cancelButtonActionPerformed(null);
+	}
 }

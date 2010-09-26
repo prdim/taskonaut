@@ -87,8 +87,9 @@ public class InternalFrameDialog  extends JInternalFrame implements ParentPanel 
     }
 	
 	@Override
-	public void onClose() {
-		this.dispose();
+	public void onCloseOk() {
+		okButtonActionPerformed(null);
+//		this.dispose();
 	}
 	
 	private void okButtonActionPerformed(ActionEvent e) {
@@ -167,4 +168,9 @@ public class InternalFrameDialog  extends JInternalFrame implements ParentPanel 
 	private JButton okButton;
 	private JButton cancelButton;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
+
+	@Override
+	public void onCloseCancel() {
+		cancelButtonActionPerformed(null);
+	}
 }

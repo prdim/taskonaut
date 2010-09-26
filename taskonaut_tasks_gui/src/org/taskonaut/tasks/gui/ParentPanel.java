@@ -10,7 +10,12 @@ package org.taskonaut.tasks.gui;
  */
 public interface ParentPanel {
 	/**
-	 * Закрыть панель. Вызывается из дочерней панели.
+	 * Закрыть панель с сохранением данных. Вызывается из дочерней панели.
 	 */
-	public void onClose();
+	public void onCloseOk();
+	
+	/**
+	 * Закрыть панель без сохранения данных. Вызывается из дочерней панели.
+	 */
+	public void onCloseCancel();
 }

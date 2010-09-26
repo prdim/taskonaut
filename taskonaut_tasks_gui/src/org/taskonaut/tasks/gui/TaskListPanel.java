@@ -180,7 +180,7 @@ public class TaskListPanel extends JPanelExt {
 	 * @param e
 	 */
 	private void okButtonActionPerformed(ActionEvent e) {
-		parentPanel.onClose();
+		parentPanel.onCloseOk();
 	}
 
 	/**
@@ -512,7 +512,7 @@ public class TaskListPanel extends JPanelExt {
 				{
 
 					//---- xTable1 ----
-					xTable1.setVisibleRowCount(5);
+					xTable1.setVisibleRowCount(15);
 					xTable1.addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {

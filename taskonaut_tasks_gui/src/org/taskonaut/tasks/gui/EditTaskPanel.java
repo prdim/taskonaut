@@ -12,10 +12,13 @@ import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.api.tasks.TimeLogItem;
 import org.taskonaut.tasks.gui.internal.Activator;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -113,6 +116,9 @@ public class EditTaskPanel extends JPanelExt {
     
 	@Override
 	public void beforeClose() {
+//		System.out.println(typeBox.getHeight() + ":" + typeBox.getWidth());
+//        System.out.println(statusBox.getHeight() + ":" + statusBox.getWidth());
+//        System.out.println(priorityBox.getHeight() + ":" + priorityBox.getWidth());
 //		ok = false;
 	}
 
@@ -264,6 +270,14 @@ public class EditTaskPanel extends JPanelExt {
         }
     }                                                            
 
+    private void nameFieldKeyPressed(KeyEvent e) {
+		if(e.getKeyCode()==10) {
+			parentPanel.onCloseOk();
+		} else if(e.getKeyCode()==27) {
+			parentPanel.onCloseCancel();
+		}
+	}
+    
     private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 		label1 = new JLabel();
@@ -277,7 +291,7 @@ public class EditTaskPanel extends JPanelExt {
 //		SimpleDateFormat df;
 //		df = new SimpleDateFormat("dd.MM.yyyy H:mm:ss");
 //		endDate.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(df)));
-		endDate.setFormats("dd.MM.yyyy H:mm");
+//		endDate.setFormats("dd.MM.yyyy H:mm");
 		label4 = new JLabel();
 		scrollPane1 = new JScrollPane();
 		commentText = new JTextArea();
@@ -305,6 +319,12 @@ public class EditTaskPanel extends JPanelExt {
 		//---- label1 ----
 		label1.setText("Название:");
 		add(label1, cc.xy(1, 1));
+		nameField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				nameFieldKeyPressed(e);
+			}
+		});
 		add(nameField, cc.xy(3, 1));
 
 		//======== panel1 ========
@@ -406,6 +426,9 @@ public class EditTaskPanel extends JPanelExt {
 		}
 		add(scrollPane2, cc.xywh(1, 13, 3, 1, CellConstraints.FILL, CellConstraints.FILL));
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
+		typeBox.setPreferredSize(new Dimension(81, 25));
+		statusBox.setPreferredSize(new Dimension(134,25));
+		priorityBox.setPreferredSize(new Dimension(96, 25));
 	}
 
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
