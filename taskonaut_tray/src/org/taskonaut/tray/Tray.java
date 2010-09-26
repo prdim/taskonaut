@@ -271,21 +271,30 @@ public class Tray /* implements IChangeDataListener */{
 		public void run() {
 			Thread myThread = Thread.currentThread();
 			while (my == myThread) {
-				if (!ActiveTask.getInstance().isActive()) {
-					trayIcon.setImage(image2);
-				} else {
-					trayIcon.setImage(image1);
-					checkTask();
+				// TODO Понаблюдать за ошибками
+				try {
+					if (!ActiveTask.getInstance().isActive()) {
+						trayIcon.setImage(image2);
+					} else {
+						trayIcon.setImage(image1);
+						checkTask();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				try {
 					Thread.sleep(200);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				if (!ActiveTask.getInstance().isActive()) {
-					trayIcon.setImage(image1);
-				} else {
-					trayIcon.setImage(image2);
+				try {
+					if (!ActiveTask.getInstance().isActive()) {
+						trayIcon.setImage(image1);
+					} else {
+						trayIcon.setImage(image2);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				try {
 					Thread.sleep(1000 + (int) (Math.random() * 15000));
