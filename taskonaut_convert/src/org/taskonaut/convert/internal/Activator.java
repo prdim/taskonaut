@@ -6,8 +6,8 @@ import java.util.List;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.taskonaut.api.MenuConnector;
-import org.taskonaut.convert.actions.Export;
-import org.taskonaut.convert.actions.ImportFromXml;
+import org.taskonaut.convert.actions.ExportData;
+import org.taskonaut.convert.actions.ImportData;
 
 public class Activator implements BundleActivator {
 	private List<MenuConnector> con = new ArrayList<MenuConnector>();
@@ -24,8 +24,8 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		System.out.println("Start import actions");
 		Activator.context = bundleContext;
-		con.add(new MenuConnector(context, new ImportFromXml()));
-		con.add(new MenuConnector(context, new Export()));
+		con.add(new MenuConnector(context, new ImportData()));
+		con.add(new MenuConnector(context, new ExportData()));
 	}
 
 	/*

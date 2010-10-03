@@ -65,7 +65,7 @@ public class BundleViewAction implements IMenuAction {
 
 	@Override
 	public int getPriority() {
-		return 20;
+		return 10;
 	}
 
 }

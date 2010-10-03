@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/home/spec/eclipse_helios/plugins/org.eclipse.osgi_3.6.0.v20100517.jar"/>
+	<classpathentry kind="lib" path="/org.jdesktop.swingx/swingx-1.6.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

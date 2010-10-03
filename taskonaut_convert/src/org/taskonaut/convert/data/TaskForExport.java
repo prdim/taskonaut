@@ -3,7 +3,11 @@
  */
 package org.taskonaut.convert.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.taskonaut.api.tasks.TaskItem;
+import org.taskonaut.api.tasks.TimeLogItem;
 
 /**
  * Реализация TaskItem для возможности экспорта
@@ -21,7 +25,12 @@ public class TaskForExport extends TaskItem {
 	private long relation_id = 0;
 	private String state = "";
 	private String type = "";
+	private List<TimeLogForExport> times = new ArrayList<TimeLogForExport>(); 
 	
+	public TaskForExport() {
+		// конструктор по умолчанию
+	}
+
 	public TaskForExport(TaskItem t) {
 		ID = t.getID();
 		comment = t.getComment();
@@ -33,113 +42,105 @@ public class TaskForExport extends TaskItem {
 		state = t.getState();
 		type = t.getType();
 	}
+	
+	public void addTimes(List<TimeLogItem> t) {
+		for(TimeLogItem i : t) {
+			times.add(new TimeLogForExport(i));
+		}
+	}
+	
+	public List<TimeLogForExport> getTimes() {
+		return times;
+	}
 
 	@Override
 	public long getID() {
-		// TODO Auto-generated method stub
-		return 0;
+		return ID;
 	}
 
 	@Override
 	public void setID(long id) {
-		// TODO Auto-generated method stub
-		
+		this.ID = id;
 	}
 
 	@Override
 	public String getComment() {
-		// TODO Auto-generated method stub
-		return null;
+		return comment;
 	}
 
 	@Override
 	public void setComment(String comment) {
-		// TODO Auto-generated method stub
-		
+		this.comment = comment;
 	}
 
 	@Override
 	public long getExecute() {
-		// TODO Auto-generated method stub
-		return 0;
+		return execute;
 	}
 
 	@Override
 	public void setExecute(long execute) {
-		// TODO Auto-generated method stub
-		
+		this.execute = execute;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	@Override
 	public void setName(String name) {
-		// TODO Auto-generated method stub
-		
+		this.name = name;
 	}
 
 	@Override
 	public String getOwner() {
-		// TODO Auto-generated method stub
-		return null;
+		return owner;
 	}
 
 	@Override
 	public void setOwner(String owner) {
-		// TODO Auto-generated method stub
-		
+		this.owner = owner;
 	}
 
 	@Override
 	public String getPriority() {
-		// TODO Auto-generated method stub
-		return null;
+		return priority;
 	}
 
 	@Override
 	public void setPriority(String priority) {
-		// TODO Auto-generated method stub
-		
+		this.priority = priority;
 	}
 
 	@Override
 	public long getRelation_id() {
-		// TODO Auto-generated method stub
-		return 0;
+		return relation_id;
 	}
 
 	@Override
 	public void setRelation_id(long relation_id) {
-		// TODO Auto-generated method stub
-		
+		this.relation_id = relation_id;
 	}
 
 	@Override
 	public String getState() {
-		// TODO Auto-generated method stub
-		return null;
+		return state;
 	}
 
 	@Override
 	public void setState(String state) {
-		// TODO Auto-generated method stub
-		
+		this.state = state;
 	}
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return type;
 	}
 
 	@Override
 	public void setType(String type) {
-		// TODO Auto-generated method stub
-		
+		this.type = type;
 	}
 
 }
