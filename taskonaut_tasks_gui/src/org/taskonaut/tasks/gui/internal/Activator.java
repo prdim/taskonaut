@@ -48,9 +48,11 @@ public class Activator implements BundleActivator {
 	public static synchronized void regEventHandler(EventHandler e, Dictionary<String, Object>p) {
 		ServiceRegistration r = context.registerService(EventHandler.class.getName(), e, p);
 		eventHandlers.put(e, r);
+		System.out.println("reg:" + e.toString());
 	}
 	
 	public static synchronized void unregEventHandler(EventHandler e) {
+		System.out.println("unreg:" + e.toString());
 		ServiceRegistration r = eventHandlers.get(e);
 		r.unregister();
 		eventHandlers.remove(e);

@@ -79,14 +79,14 @@ public class DefaultInternalFrame extends JInternalFrame implements ParentPanel 
 
 	@Override
 	public void onCloseOk() {
-		pe.beforeClose();
+//		pe.beforeClose();
 		this.dispose();
 		
 	}
 
 	@Override
 	public void onCloseCancel() {
-		pe.beforeClose();
+//		pe.beforeClose();
 		this.dispose();
 	}
 	
