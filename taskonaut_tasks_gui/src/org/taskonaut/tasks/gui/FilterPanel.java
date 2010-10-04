@@ -91,6 +91,10 @@ public class FilterPanel extends JPanelExt {
 			}
 			
 		});
+		
+		// Выполненные задачи отфильтруем по умолчанию
+		statusFiltered.add(TaskItem.Status.выполнена);
+		statusFiltered.add(TaskItem.Status.отменена);
 	}
 
 	/* (non-Javadoc)
