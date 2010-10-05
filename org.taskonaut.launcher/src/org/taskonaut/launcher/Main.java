@@ -22,6 +22,12 @@ package org.taskonaut.launcher;
  * @author spec
  *
  */
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.SplashScreen;
+import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -30,14 +36,19 @@ import org.osgi.framework.*;
 import org.osgi.framework.launch.*;
 
 public class Main {
+    private static SplashScreen splash;
+    private static Rectangle2D.Double splashTextArea;
+    private static Rectangle2D.Double splashProgressArea;
+    private static Graphics2D splashGraphics;
 
     private static Framework fwk;
 
     public static void main(String[] args) throws Exception {
         // Must specify a bundle directory.
-        SplashFrame splash = new SplashFrame();
-        splash.setVisible(true);
-        splash.updateStatus("Установка плагинов", -1);
+//        SplashFrame splash = new SplashFrame();
+//        splash.setVisible(true);
+//        splash.updateStatus("Установка плагинов", -1);
+        splashInit();
         File[] files;
         if (args.length < 1 || !new File(args[0]).isDirectory()) {
 //      System.out.println("Usage: <bundle-directory>");
@@ -87,13 +98,15 @@ public class Main {
                 Map m = new HashMap();
                 m.putAll(System.getProperties());
                 m.put(Constants.FRAMEWORK_STORAGE_CLEAN, "onFirstInit");
-                splash.updateStatus("Запуск OSGi", -1);
+//                splash.updateStatus("Запуск OSGi", -1);
+                splashText("Запуск OSGi");
                 fwk = getFrameworkFactory().newFramework(m);
                 fwk.start();
 
                 // Install bundle JAR files and remember the bundle objects.
                 BundleContext ctxt = fwk.getBundleContext();
-                splash.updateStatus("Загрузка плагинов", -1);
+//                splash.updateStatus("Загрузка плагинов", -1);
+                splashText("Загрузка плагинов");
                 for (int i = 0; i < jars.size(); i++) {
                     Bundle b = ctxt.installBundle(((File) jars.get(i)).toURI().toString());
                     bundleList.add(b);
@@ -106,8 +119,10 @@ public class Main {
                 // Start all installed non-fragment bundles.
                 for (int i = 0; i < bundleList.size(); i++) {
                     if (!isFragment((Bundle) bundleList.get(i))) {
-                        splash.updateStatus("Запуск " + bundleList.get(i).toString(), i*100/bundleList.size());
-                        System.out.println(bundleList.get(i).toString());
+//                        splash.updateStatus("Запуск " + bundleList.get(i).toString(), i*100/bundleList.size());
+                        splashText("Запуск " + bundleList.get(i).toString());
+                        splashProgress(i*100/bundleList.size());
+                        System.out.println("Запуск " + bundleList.get(i).toString());
                         ((Bundle) bundleList.get(i)).start();
                     }
                 }
@@ -130,8 +145,8 @@ public class Main {
                         System.err.println("Main class not found: " + mainClassName);
                     }
                 }
-                splash.dispose();
-
+//                splash.dispose();
+                splash.close();
                 // Wait for framework to stop.
                 fwk.waitForStop(0);
                 System.out.println("OSGi stop");
@@ -140,7 +155,7 @@ public class Main {
             } catch (Exception ex) {
                 System.err.println("Error starting framework: " + ex);
                 ex.printStackTrace();
-                splash.dispose();
+//                splash.dispose();
                 System.exit(0);
             }
 //      }
@@ -180,5 +195,64 @@ public class Main {
         }
 
         throw new Exception("Could not find framework factory.");
+    }
+
+    private static void splashInit() {
+        splash = SplashScreen.getSplashScreen();
+        if(splash != null) {
+            Dimension ssDim = splash.getSize();
+            int height = ssDim.height;
+            int width = ssDim.width;
+            splashTextArea = new Rectangle2D.Double(15., 15., width - 25., 20.);
+            splashProgressArea = new Rectangle2D.Double(width * .55, height*.92, width*.4, 16 );
+            splashGraphics = splash.createGraphics();
+            splashGraphics.setFont(new Font("Dialog", Font.PLAIN, 12));
+            splashText("Starting");
+            splashProgress(0);
+        }
+    }
+
+    private static void splashText(String str) {
+        if (splash != null && splash.isVisible()) {
+            // erase the last status text
+            splashGraphics.setPaint(Color.LIGHT_GRAY);
+            splashGraphics.fill(splashTextArea);
+
+            // draw the text
+            splashGraphics.setPaint(Color.BLACK);
+            splashGraphics.drawString(str, (int)(splashTextArea.getX() + 10),(int)(splashTextArea.getY() + 15));
+
+            // make sure it's displayed
+            splash.update();
+        }
+    }
+
+    private static void splashProgress(int pct) {
+        if (splash != null && splash.isVisible()) {
+            // Note: 3 colors are used here to demonstrate steps
+            // erase the old one
+            splashGraphics.setPaint(Color.LIGHT_GRAY);
+            splashGraphics.fill(splashProgressArea);
+
+            // draw an outline
+            splashGraphics.setPaint(Color.BLUE);
+            splashGraphics.draw(splashProgressArea);
+
+            // Calculate the width corresponding to the correct percentage
+            int x = (int) splashProgressArea.getMinX();
+            int y = (int) splashProgressArea.getMinY();
+            int wid = (int) splashProgressArea.getWidth();
+            int hgt = (int) splashProgressArea.getHeight();
+
+            int doneWidth = Math.round(pct*wid/100.f);
+            doneWidth = Math.max(0, Math.min(doneWidth, wid-1));  // limit 0-width
+
+            // fill the done part one pixel smaller than the outline
+            splashGraphics.setPaint(Color.GREEN);
+            splashGraphics.fillRect(x, y+1, doneWidth, hgt-1);
+
+            // make sure it's displayed
+            splash.update();
+        }
     }
 }
