@@ -57,9 +57,16 @@ public class TimeReportPanel extends JPanelExt {
                             TaskStoreServiceConnector.getStore().readTask(t.getTaskId()).getName(),
                             t.getTaskId(), t.getComment()));
                 } else {
-                    table.add(new TableElement(t.getID(), t.getPeriod(),
+                	// TODO Почему возникают записи со ссылкой на нулевую задачу?
+                	System.out.println(t.getID() + ", " + t.getTaskId() + ", " + t.getPeriod());
+                    if(t.getTaskId()!=0)
+                	table.add(new TableElement(t.getID(), t.getPeriod(),
                     		TaskStoreServiceConnector.getStore().readTask(t.getTaskId()).getName(),
                             t.getTaskId(), t.getComment()));
+                    else
+                    	table.add(new TableElement(t.getID(), t.getPeriod(),
+                        		"-",
+                                t.getTaskId(), t.getComment()));
                 }
                 all += t.getPeriod();
             }
