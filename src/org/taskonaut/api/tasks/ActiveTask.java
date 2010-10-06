@@ -26,7 +26,7 @@ public class ActiveTask {
 	
 	public synchronized void stop() {
 		long t = System.currentTimeMillis();
-		TaskStoreServiceConnector.getStore().addTime(startTime, t, taskId);
+		if (taskId != 0) TaskStoreServiceConnector.getStore().addTime(startTime, t, taskId);
 		taskId=0;
 	}
 	
@@ -35,7 +35,7 @@ public class ActiveTask {
 	}
 	
 	public synchronized void restore() {
-		TaskStoreServiceConnector.getStore().addTime(startTime, lastCheck, taskId);
+		if (taskId != 0) TaskStoreServiceConnector.getStore().addTime(startTime, lastCheck, taskId);
 		taskId=0;
 	}
 	
