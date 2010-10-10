@@ -13,7 +13,8 @@ import java.util.Map;
  *
  */
 public interface IMenuService {
-	public Map<String, List<IMenuAction>> getAllItems();
+//	public Map<String, List<IMenuAction>> getAllItems();
+	public List<IMenuAction> getAllItems();
 	public void bindMenuItem(IMenuAction m);
 	public void ubindMenuItem(IMenuAction m);
 }

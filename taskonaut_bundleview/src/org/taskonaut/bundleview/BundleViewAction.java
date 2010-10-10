@@ -59,8 +59,8 @@ public class BundleViewAction implements IMenuAction {
 	}
 
 	@Override
-	public String getMenu() {
-		return "fileMenu";
+	public String getMenuPath() {
+		return "Файл";
 	}
 
 	@Override

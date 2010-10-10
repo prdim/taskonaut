@@ -4,7 +4,12 @@
 package org.taskonaut.app;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -108,37 +113,106 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		return menuBar;
 	}
 	
-	private void updateAllMenu() {
+	private synchronized void updateAllMenu() {
 		System.out.println("Update ALL menu");
-//		if(menuBar == null) return;
-//		Map<String, List<IMenuAction>> m = Activator.getMenuTracker().getMenu();
-		updateMenu("fileMenu", fileMenu);
-		updateMenu("taskMenu", taskMenu);
-		updateMenu("reportMenu", reportMenu);
-		updateMenu("helpMenu", helpMenu);
-		// Постоянные пункты, которые не зависят от наличия плагинов
-		JMenuItem menuItem = new JMenuItem();
-		menuItem.setAction(getAction("quit"));
-		menuItem.setIcon(null);
-		fileMenu.add(menuItem);
-		menuItem = new JMenuItem();
-		menuItem.setAction(getAction("showAboutBox"));
-		menuItem.setIcon(null);
-		helpMenu.add(menuItem);
-	}
-	
-	private void updateMenu(String s, JMenu mn) {
-		mn.removeAll();
-		if(!Activator.getMenuService().getAllItems().containsKey(s)) return;
-		System.out.println("Update menu -> " + s);
-		List<IMenuAction> mp = Activator.getMenuService().getAllItems().get(s);
-		for(IMenuAction i : mp) {
+////		if(menuBar == null) return;
+////		Map<String, List<IMenuAction>> m = Activator.getMenuTracker().getMenu();
+//		updateMenu("fileMenu", fileMenu);
+//		updateMenu("taskMenu", taskMenu);
+//		updateMenu("reportMenu", reportMenu);
+//		updateMenu("helpMenu", helpMenu);
+//		// Постоянные пункты, которые не зависят от наличия плагинов
+//		JMenuItem menuItem = new JMenuItem();
+//		menuItem.setAction(getAction("quit"));
+//		menuItem.setIcon(null);
+//		fileMenu.add(menuItem);
+//		menuItem = new JMenuItem();
+//		menuItem.setAction(getAction("showAboutBox"));
+//		menuItem.setIcon(null);
+//		helpMenu.add(menuItem);
+		JMenu root = new JMenu("root menu");
+		JMenu menu = new JMenu("Файл");
+		menu.setName("Файл");
+		root.add(menu);
+		menu = new JMenu("Задачи");
+		menu.setName("Задачи");
+		root.add(menu);
+		menu = new JMenu("Отчеты");
+		menu.setName("Отчеты");
+		root.add(menu);
+		menu = new JMenu("Помощь");
+		menu.setName("Помощь");
+		root.add(menu);
+		List<IMenuAction> m = Activator.getMenuService().getAllItems();
+		Comparator<IMenuAction> menuComparator = new Comparator<IMenuAction>() {
+			
+			@Override
+			public int compare(IMenuAction o1, IMenuAction o2) {
+				return o1.getPriority() - o2.getPriority();
+			}
+		};
+		Collections.sort(m, menuComparator);
+		for(IMenuAction i : m) {
+//			ArrayList<String> r = new ArrayList<String>(i.getMenuPath().split("|"));
+			System.out.println(i.getMenuPath());
+			JMenu t = getMenu(root, Arrays.asList(i.getMenuPath().split("\\|")));
 			JMenuItem menuItem = new JMenuItem();
 			menuItem.setAction(getContext().getActionMap(i).get(i.getActionName()));
 			menuItem.setIcon(null);
-			// TODO Concurent modification exception!!!
-			mn.add(menuItem);
+			t.add(menuItem);
 		}
+		JMenuItem quit = new JMenuItem();
+		quit.setAction(getAction("quit"));
+		quit.setIcon(null);
+		JMenuItem about = new JMenuItem();
+		about.setAction(getAction("showAboutBox"));
+		about.setIcon(null);
+		getMenu(root, Arrays.asList(new String[] {"Файл"})).add(quit);
+		getMenu(root, Arrays.asList(new String[] {"Помощь"})).add(about);
+		
+		menuBar.removeAll();
+		for(Component i : root.getMenuComponents()) {
+			menuBar.add(i);
+		}
+	}
+	
+//	private void updateMenu(String s, JMenu mn) {
+//		mn.removeAll();
+//		if(!Activator.getMenuService().getAllItems().containsKey(s)) return;
+//		System.out.println("Update menu -> " + s);
+//		List<IMenuAction> mp = Activator.getMenuService().getAllItems().get(s);
+//		for(IMenuAction i : mp) {
+//			JMenuItem menuItem = new JMenuItem();
+//			menuItem.setAction(getContext().getActionMap(i).get(i.getActionName()));
+//			menuItem.setIcon(null);
+//			// TODO Concurent modification exception!!!
+//			mn.add(menuItem);
+//		}
+//	}
+	
+	private JMenu getMenu(JMenu m, List<String> nextPath) {
+//		System.out.println("===" + nextPath);
+		if(nextPath.size()==0) return m;
+		String s = nextPath.get(0);
+//		System.out.println(">>>" + s);
+		List<String> p;
+		if(nextPath.size()>1) {
+			p = nextPath.subList(1, nextPath.size());
+		} else {
+			p = new ArrayList<String>();
+		}
+//		System.out.println("+++" + p);
+//		nextPath.remove(0);
+		for(Component i : m.getMenuComponents()) {
+			if(s.equals(i.getName())) {
+				return getMenu((JMenu)i,p);
+			}
+		}
+		JMenu k = new JMenu(s);
+		k.setName(s);
+		m.add(k);
+//		System.out.println("Crete menu " + s + " from menu " + m.getName());
+		return getMenu(k, p);
 	}
 
 	private javax.swing.Action getAction(String actionName) {

@@ -39,8 +39,8 @@ public class TestActions implements IMenuAction {
 	}
 
 	@Override
-	public String getMenu() {
-		return "taskMenu";
+	public String getMenuPath() {
+		return "Задачи|Тест|Вложенное меню|Еще немного...|Глубже";
 	}
 
 	@Override

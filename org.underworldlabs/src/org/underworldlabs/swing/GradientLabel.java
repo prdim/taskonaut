@@ -115,14 +115,14 @@ public class GradientLabel extends JComponent {
         this.shadowDropped = shadowDropped;
         
         if (foregroundColor == null) {
-            if (!UIUtils.isWindowsLookAndFeel()) {
-                foregroundColor = Color.WHITE;
-            } else {
+//            if (!UIUtils.isWindowsLookAndFeel()) {
+//                foregroundColor = Color.WHITE;
+//            } else {
                 if (leftGradientColor == null) {
                     leftGradientColor = getLeftGradientColor();
                 }
                 foregroundColor = UIUtils.getInverse(leftGradientColor).darker();
-            }
+//            }
         }
         setForeground(foregroundColor);
     }

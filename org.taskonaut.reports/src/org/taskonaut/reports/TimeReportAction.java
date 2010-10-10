@@ -39,8 +39,8 @@ public class TimeReportAction implements IMenuAction {
 	}
 
 	@Override
-	public String getMenu() {
-		return "reportMenu";
+	public String getMenuPath() {
+		return "Отчеты";
 	}
 
 	@Override

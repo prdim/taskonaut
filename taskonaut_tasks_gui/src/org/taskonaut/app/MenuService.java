@@ -20,7 +20,8 @@ import org.taskonaut.api.IMenuService;
  */
 public class MenuService implements IMenuService {
 	private List<IChangeDataListener> changeListeners = new ArrayList<IChangeDataListener>();
-	private Map<String, List<IMenuAction>> items = new ConcurrentHashMap<String, List<IMenuAction>>();
+//	private Map<String, List<IMenuAction>> items = new ConcurrentHashMap<String, List<IMenuAction>>();
+	private List<IMenuAction> items = new ArrayList<IMenuAction>();
 	
 	/* (non-Javadoc)
 	 * @see org.taskonaut.api.IMenuService#bindMenuItem(org.taskonaut.api.IMenuAction)
@@ -28,23 +29,24 @@ public class MenuService implements IMenuService {
 	@Override
 	public synchronized void bindMenuItem(IMenuAction item) {
 		System.out.println("bind " + item.getActionName());
-		if(items.containsKey(item.getMenu())) {
-			List<IMenuAction> k = items.get(item.getMenu());
-			boolean f = false;
-			for(int i=0; i<k.size(); i++) {
-				if(k.get(i).getPriority()>item.getPriority()) {
-					k.add(i==0 ? 0 : (i-1), item);
-					f = true;
-					break;
-				}
-			}
-			if(!f) k.add(item);
-			items.put(item.getMenu(), k);
-		} else {
-			ArrayList<IMenuAction> k = new ArrayList<IMenuAction>();
-			k.add(item);
-			items.put(item.getMenu(), k);
-		}
+		items.add(item);
+//		if(items.containsKey(item.getMenu())) {
+//			List<IMenuAction> k = items.get(item.getMenu());
+//			boolean f = false;
+//			for(int i=0; i<k.size(); i++) {
+//				if(k.get(i).getPriority()>item.getPriority()) {
+//					k.add(i==0 ? 0 : (i-1), item);
+//					f = true;
+//					break;
+//				}
+//			}
+//			if(!f) k.add(item);
+//			items.put(item.getMenu(), k);
+//		} else {
+//			ArrayList<IMenuAction> k = new ArrayList<IMenuAction>();
+//			k.add(item);
+//			items.put(item.getMenu(), k);
+//		}
 		notifyChanges();
 	}
 
@@ -52,7 +54,7 @@ public class MenuService implements IMenuService {
 	 * @see org.taskonaut.api.IMenuService#getAllItems()
 	 */
 	@Override
-	public Map<String, List<IMenuAction>> getAllItems() {
+	public List<IMenuAction> getAllItems() {
 		return items;
 	}
 
@@ -62,8 +64,9 @@ public class MenuService implements IMenuService {
 	@Override
 	public synchronized void ubindMenuItem(IMenuAction item) {
 		System.out.println("ubind " + item.getActionName());
-		items.get(item.getMenu()).remove(item);
-		if(items.get(item.getMenu()).size()==0) items.remove(item.getMenu());
+		items.remove(item);
+//		items.get(item.getMenu()).remove(item);
+//		if(items.get(item.getMenu()).size()==0) items.remove(item.getMenu());
 		notifyChanges();
 	}
 

@@ -81,8 +81,8 @@ public class NewTaskAction implements IMenuAction {
 	 * @see org.taskonaut.api.IMenuAction#getMenu()
 	 */
 	@Override
-	public String getMenu() {
-		return "taskMenu";
+	public String getMenuPath() {
+		return "Задачи";
 	}
 
 	/* (non-Javadoc)

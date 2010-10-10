@@ -19,10 +19,10 @@ public interface IMenuAction {
 	public String getActionName();
 	
 	/**
-	 * В каком меню расположить пункт?
+	 * Путь в меню (например: "Файл|Экспорт") без заключительного пункта
 	 * @return
 	 */
-	public String getMenu();
+	public String getMenuPath();
 	
 	/**
 	 * Приоритет данного пункта - для сортировки пунктов в меню
