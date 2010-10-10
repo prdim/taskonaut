@@ -90,7 +90,7 @@ public class NewTaskAction implements IMenuAction {
 	 */
 	@Override
 	public int getPriority() {
-		return 100;
+		return 10;
 	}
 
 }

@@ -116,7 +116,7 @@ public class ImportData implements IMenuAction {
 
 	@Override
 	public int getPriority() {
-		return 30;
+		return 20;
 	}
 
 }

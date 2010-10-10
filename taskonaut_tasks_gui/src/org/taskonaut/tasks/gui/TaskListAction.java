@@ -51,7 +51,7 @@ public class TaskListAction implements IMenuAction {
 	 */
 	@Override
 	public int getPriority() {
-		return 110;
+		return 20;
 	}
 
 }

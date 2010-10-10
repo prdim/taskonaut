@@ -80,7 +80,7 @@ public class ExportData implements IMenuAction {
 
 	@Override
 	public int getPriority() {
-		return 20;
+		return 30;
 	}
 
 }

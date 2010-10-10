@@ -42,12 +42,6 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 	private StatusBar statusBar;
 	public static boolean isInit = false;
 	private JDialog aboutBox;
-	private JMenu fileMenu = new JMenu();
-	private JMenu taskMenu = new JMenu();
-	private JMenu reportMenu = new JMenu();
-	private JMenu propsMenu = new JMenu();
-//	private JMenu windowsMenu = new JMenu();
-	private JMenu helpMenu = new JMenu();
 	private JMenuBar menuBar = null;
 	private MDIDesktopPane mdi;
 
@@ -84,53 +78,14 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 	}
 	
 	private JMenuBar createMenuBar() {
-		// TODO Файл, Задачи, Отчеты, Свойства, Окна, Помощь		
-		fileMenu.setName("fileMenu");
-		taskMenu.setName("taskMenu");
-		reportMenu.setName("reportMenu");
-		propsMenu.setName("propsMenu");
-//		windowsMenu.setName("windowsMenu");
-		helpMenu.setName("helpMenu");
-		
-//		updateAllMenu();
-		
-//		JMenuItem menuItem = new JMenuItem();
-//		menuItem.setAction(getAction("quit"));
-//		menuItem.setIcon(null);
-//		fileMenu.add(menuItem);
-//		menuItem = new JMenuItem();
-//		menuItem.setAction(getAction("showAboutBox"));
-//		menuItem.setIcon(null);
-//		helpMenu.add(menuItem);
-		
 		menuBar = new JMenuBar();
-		menuBar.add(fileMenu);
-		menuBar.add(taskMenu);
-		menuBar.add(reportMenu);
-//		menuBar.add(propsMenu);
-//		menuBar.add(windowsMenu);
-		menuBar.add(helpMenu);
 		return menuBar;
 	}
 	
 	private synchronized void updateAllMenu() {
 		System.out.println("Update ALL menu");
-////		if(menuBar == null) return;
-////		Map<String, List<IMenuAction>> m = Activator.getMenuTracker().getMenu();
-//		updateMenu("fileMenu", fileMenu);
-//		updateMenu("taskMenu", taskMenu);
-//		updateMenu("reportMenu", reportMenu);
-//		updateMenu("helpMenu", helpMenu);
-//		// Постоянные пункты, которые не зависят от наличия плагинов
-//		JMenuItem menuItem = new JMenuItem();
-//		menuItem.setAction(getAction("quit"));
-//		menuItem.setIcon(null);
-//		fileMenu.add(menuItem);
-//		menuItem = new JMenuItem();
-//		menuItem.setAction(getAction("showAboutBox"));
-//		menuItem.setIcon(null);
-//		helpMenu.add(menuItem);
 		JMenu root = new JMenu("root menu");
+		// Добавим пункты которые всегда присутствуют
 		JMenu menu = new JMenu("Файл");
 		menu.setName("Файл");
 		root.add(menu);
@@ -143,6 +98,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		menu = new JMenu("Помощь");
 		menu.setName("Помощь");
 		root.add(menu);
+		// Отсортируем пункты, добавленные плагинами
 		List<IMenuAction> m = Activator.getMenuService().getAllItems();
 		Comparator<IMenuAction> menuComparator = new Comparator<IMenuAction>() {
 			
@@ -152,8 +108,8 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 			}
 		};
 		Collections.sort(m, menuComparator);
+		// Добавим их в меню
 		for(IMenuAction i : m) {
-//			ArrayList<String> r = new ArrayList<String>(i.getMenuPath().split("|"));
 			System.out.println(i.getMenuPath());
 			JMenu t = getMenu(root, Arrays.asList(i.getMenuPath().split("\\|")));
 			JMenuItem menuItem = new JMenuItem();
@@ -161,6 +117,7 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 			menuItem.setIcon(null);
 			t.add(menuItem);
 		}
+		// Теперь пару пунктов, которые присутствуют всегда
 		JMenuItem quit = new JMenuItem();
 		quit.setAction(getAction("quit"));
 		quit.setIcon(null);
@@ -169,40 +126,22 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		about.setIcon(null);
 		getMenu(root, Arrays.asList(new String[] {"Файл"})).add(quit);
 		getMenu(root, Arrays.asList(new String[] {"Помощь"})).add(about);
-		
+		// Все это дело поместим в бар
 		menuBar.removeAll();
 		for(Component i : root.getMenuComponents()) {
 			menuBar.add(i);
 		}
 	}
 	
-//	private void updateMenu(String s, JMenu mn) {
-//		mn.removeAll();
-//		if(!Activator.getMenuService().getAllItems().containsKey(s)) return;
-//		System.out.println("Update menu -> " + s);
-//		List<IMenuAction> mp = Activator.getMenuService().getAllItems().get(s);
-//		for(IMenuAction i : mp) {
-//			JMenuItem menuItem = new JMenuItem();
-//			menuItem.setAction(getContext().getActionMap(i).get(i.getActionName()));
-//			menuItem.setIcon(null);
-//			// TODO Concurent modification exception!!!
-//			mn.add(menuItem);
-//		}
-//	}
-	
 	private JMenu getMenu(JMenu m, List<String> nextPath) {
-//		System.out.println("===" + nextPath);
 		if(nextPath.size()==0) return m;
 		String s = nextPath.get(0);
-//		System.out.println(">>>" + s);
 		List<String> p;
 		if(nextPath.size()>1) {
 			p = nextPath.subList(1, nextPath.size());
 		} else {
 			p = new ArrayList<String>();
 		}
-//		System.out.println("+++" + p);
-//		nextPath.remove(0);
 		for(Component i : m.getMenuComponents()) {
 			if(s.equals(i.getName())) {
 				return getMenu((JMenu)i,p);
@@ -211,7 +150,6 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 		JMenu k = new JMenu(s);
 		k.setName(s);
 		m.add(k);
-//		System.out.println("Crete menu " + s + " from menu " + m.getName());
 		return getMenu(k, p);
 	}
 

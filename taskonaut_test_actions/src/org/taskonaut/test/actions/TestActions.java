@@ -45,7 +45,7 @@ public class TestActions implements IMenuAction {
 
 	@Override
 	public int getPriority() {
-		return 110;
+		return 100;
 	}
 	
 	
