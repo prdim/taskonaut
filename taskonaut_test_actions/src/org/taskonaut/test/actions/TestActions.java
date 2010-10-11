@@ -22,15 +22,13 @@ public class TestActions implements IMenuAction {
 	
 	@Action
 	public void testAction1() throws FileNotFoundException {
-//		System.out.println("Test action!");
-//		TaskItem t = TaskFactory.createNewTask("test task!!!");
-//		t.setPriority(TaskItem.Priority.критично.name());
-//		FileUtils.beanToXML(t, "./test.xml");
-		List<TaskItem> i = TaskStoreServiceConnector.getStore().readAllTasks();
-		for(TaskItem t : i) {
-			System.out.println(t.getName());
-		}
-		System.out.println(TaskStoreServiceConnector.getStore().readAllTimeLogItems().size());
+//		List<TaskItem> i = TaskStoreServiceConnector.getStore().readAllTasks();
+//		for(TaskItem t : i) {
+//			System.out.println(t.getName());
+//		}
+//		System.out.println(TaskStoreServiceConnector.getStore().readAllTimeLogItems().size());
+		GuiConfig.getInstance().setHideMinimized(true);
+		GuiConfig.getInstance().save();
 	}
 
 	@Override
