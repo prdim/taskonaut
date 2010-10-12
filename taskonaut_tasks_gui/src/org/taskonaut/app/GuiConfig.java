@@ -51,11 +51,6 @@ public class GuiConfig extends AbstractProperties {
 		return "Настройки поведения пользовательского интерфейса";
 	}
 
-	@Override
-	public void save() {
-		save(FILE_NAME);
-	}
-
 	/**
 	 * @return the hideMinimized
 	 */
@@ -72,12 +67,12 @@ public class GuiConfig extends AbstractProperties {
 	
 	// TODO Подумать...
 
-	public synchronized void save(String f) {
+	public synchronized void save() {
 		try {
 			File t = new File("./config");
 			if(!t.exists()) t.mkdir();
 			
-			XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("./config/" + f)));
+			XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream("./config/" + FILE_NAME)));
 			encoder.writeObject(this);
 			encoder.close();
 		} catch (Exception e) {
@@ -85,7 +80,7 @@ public class GuiConfig extends AbstractProperties {
 		}
 	}
 	
-	public static synchronized Object load(String f) {
+	private static synchronized Object load(String f) {
 		Object o = null;
 		try {
 			XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream("./config/" + f)));
