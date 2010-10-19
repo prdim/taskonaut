@@ -11,9 +11,11 @@ import org.jdesktop.application.Application;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.taskonaut.api.AbstractProperties;
 import org.taskonaut.api.IMenuAction;
 import org.taskonaut.api.IMenuService;
 import org.taskonaut.api.MenuConnector;
+import org.taskonaut.app.GuiConfig;
 import org.taskonaut.app.MenuService;
 import org.taskonaut.app.MainApplication;
 import org.taskonaut.tasks.gui.NewTaskAction;
@@ -32,6 +34,7 @@ public class Activator implements BundleActivator {
 					new HashMap<EventHandler,ServiceRegistration>();
 	private static MenuService menu;
 	private ServiceRegistration registration;
+	private ServiceRegistration registration2;
 
 	static BundleContext getContext() {
 		return context;
@@ -76,6 +79,7 @@ public class Activator implements BundleActivator {
 		
 		menu = new MenuService();
 		registration = context.registerService(IMenuService.class.getName(), menu, null);
+		registration2 = context.registerService(AbstractProperties.class.getName(), GuiConfig.getInstance(), null);
 		Application.launch(MainApplication.class, new String[] {});
 		
 		System.out.println("GUI service started");
@@ -89,6 +93,7 @@ public class Activator implements BundleActivator {
 		Activator.context = null;
 		menu.clearAllListeners();
 		registration.unregister();
+		registration2.unregister();
 		con.close();
 //		reg.unregister();
 		

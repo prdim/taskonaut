@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
  * @author spec
  *
  */
-public abstract class AbstractProperties {
+public interface AbstractProperties {
 	
 	public abstract String getTitle();
 	public abstract String getExtendInfo();

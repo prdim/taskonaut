@@ -3,16 +3,14 @@
  */
 package org.taskonaut.test.actions;
 
+import java.beans.PropertyDescriptor;
 import java.io.FileNotFoundException;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.jdesktop.application.Action;
 import org.taskonaut.api.IMenuAction;
-import org.taskonaut.api.tasks.TaskFactory;
-import org.taskonaut.api.tasks.TaskItem;
-import org.taskonaut.api.tasks.TaskStoreServiceConnector;
-import org.taskonaut.app.*;
-import org.taskonaut.util.FileUtils;
+import org.taskonaut.test.actions.internal.Activator;
 
 /**
  * @author spec
@@ -21,14 +19,22 @@ import org.taskonaut.util.FileUtils;
 public class TestActions implements IMenuAction {
 	
 	@Action
-	public void testAction1() throws FileNotFoundException {
+	public void testAction1() throws FileNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 //		List<TaskItem> i = TaskStoreServiceConnector.getStore().readAllTasks();
 //		for(TaskItem t : i) {
 //			System.out.println(t.getName());
 //		}
 //		System.out.println(TaskStoreServiceConnector.getStore().readAllTimeLogItems().size());
-		GuiConfig.getInstance().setHideMinimized(true);
-		GuiConfig.getInstance().save();
+
+//		GuiConfig.getInstance().setHideMinimized(true);
+//		GuiConfig.getInstance().save();
+		
+		System.out.println(Activator.getProps().getTitle());
+//		PropertyUtils.setDebug(1);
+		PropertyDescriptor[] pr = PropertyUtils.getPropertyDescriptors(Activator.getProps());
+		for(PropertyDescriptor p : pr) {
+			System.out.println(p.getDisplayName() + " : " + PropertyUtils.getProperty(Activator.getProps(), p.getName()));
+		}
 	}
 
 	@Override

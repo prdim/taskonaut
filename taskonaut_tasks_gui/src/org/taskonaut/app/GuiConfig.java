@@ -17,7 +17,7 @@ import org.taskonaut.api.AbstractProperties;
  * @author spec
  *
  */
-public class GuiConfig extends AbstractProperties {
+public class GuiConfig implements AbstractProperties {
 	private static transient GuiConfig me = null;
 	private static final String FILE_NAME = "gui_config.xml";
 	
