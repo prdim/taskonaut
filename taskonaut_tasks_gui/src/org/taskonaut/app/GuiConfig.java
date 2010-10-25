@@ -22,6 +22,8 @@ public class GuiConfig implements AbstractProperties {
 	private static final String FILE_NAME = "gui_config.xml";
 	
 	private boolean hideMinimized = false;
+	private int testNumber = 0;
+	private String testString = "test";
 	
 	public static GuiConfig getInstance() {
 		if(me == null) {
@@ -64,8 +66,34 @@ public class GuiConfig implements AbstractProperties {
 	public void setHideMinimized(boolean hideMinimized) {
 		this.hideMinimized = hideMinimized;
 	}
-	
-	// TODO Подумать...
+
+	/**
+	 * @return the testNumber
+	 */
+	public int getTestNumber() {
+		return testNumber;
+	}
+
+	/**
+	 * @param testNumber the testNumber to set
+	 */
+	public void setTestNumber(int testNumber) {
+		this.testNumber = testNumber;
+	}
+
+	/**
+	 * @return the testString
+	 */
+	public String getTestString() {
+		return testString;
+	}
+
+	/**
+	 * @param testString the testString to set
+	 */
+	public void setTestString(String testString) {
+		this.testString = testString;
+	}
 
 	public synchronized void save() {
 		try {

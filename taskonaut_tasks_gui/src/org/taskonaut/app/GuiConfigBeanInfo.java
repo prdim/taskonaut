@@ -5,6 +5,7 @@ package org.taskonaut.app;
 
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
+import java.util.ArrayList;
 
 /**
  * @author spec
@@ -13,10 +14,18 @@ import java.beans.SimpleBeanInfo;
 public class GuiConfigBeanInfo extends SimpleBeanInfo {
 	public PropertyDescriptor[] getPropertyDescriptors() {
 		try {
-			PropertyDescriptor p1 = new PropertyDescriptor("hideMinimized", GuiConfig.class);
-			p1.setDisplayName("Скрывать свернутое");
-			
-			return new PropertyDescriptor[] {p1};
+			ArrayList<PropertyDescriptor> pr = new ArrayList<PropertyDescriptor>();
+			PropertyDescriptor p;
+			p = new PropertyDescriptor("hideMinimized", GuiConfig.class);
+			p.setDisplayName("Скрывать свернутое");
+			pr.add(p);
+			p = new PropertyDescriptor("testNumber", GuiConfig.class);
+			p.setDisplayName("Тестовый числовой параметр");
+			pr.add(p);
+			p = new PropertyDescriptor("testString", GuiConfig.class);
+			p.setDisplayName("Тестовый строковый параметр");
+			pr.add(p);
+			return pr.toArray(new PropertyDescriptor[] {});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

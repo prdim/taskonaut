@@ -10,18 +10,28 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jdesktop.swingx.JXTable;
 import org.taskonaut.api.AbstractProperties;
 import org.taskonaut.tasks.gui.JPanelExt;
+import org.underworldlabs.swing.table.CheckBoxTableCellRenderer;
+import org.underworldlabs.swing.table.EachRowEditor;
+import org.underworldlabs.swing.table.EachRowRenderer;
+import org.underworldlabs.swing.table.NumberCellEditor;
 
 /**
+ * Панель редактирования свойств программы
  *
- * @author  __USER__
+ * @author  Dmitry Prolubnikov
  */
 public class PropertyEditPanel extends JPanelExt {
 	private List<AbstractProperties> props;
@@ -35,19 +45,56 @@ public class PropertyEditPanel extends JPanelExt {
 	private void initComponents() {
 		JTabbedPane jTabbedPane1;
 		JScrollPane jScrollPane1;
-		JXTable jTable1;
+		JXTable table;
 		PropertyDescriptor[] pr;
 
 		jTabbedPane1 = new JTabbedPane();
 		for (AbstractProperties i : props) {
 			jScrollPane1 = new JScrollPane();
-			jTable1 = new JXTable();
+			table = new JXTable();
 			pr = PropertyUtils.getPropertyDescriptors(i);
 
 			setLayout(new java.awt.BorderLayout());
 
-			jTable1.setModel(new PropertyTableModel(pr, i));
-			jScrollPane1.setViewportView(jTable1);
+			table.setModel(new PropertyTableModel(pr, i));
+			
+			EachRowEditor rowEditor = new EachRowEditor(table);
+			CheckBoxTableCellRenderer checkBoxRenderer = null;
+			EachRowRenderer rowRendererKeys = null;
+			EachRowRenderer rowRendererValues = new EachRowRenderer();
+			for(int k=0; k<pr.length; k++) {
+				DefaultCellEditor editor = null;
+				String c = pr[k].getPropertyType().getSimpleName();
+				if("String".equals(c)) {
+					// TODO
+				} else if("int".equals(c) || "long".equals(c)) {
+					final NumberCellEditor numEditor = new NumberCellEditor(10, true);
+					editor = new DefaultCellEditor(numEditor) {
+						public Object getCellEditorValue() {
+							return numEditor.getStringValue();
+						}
+					};
+					rowEditor.setEditorAt(k, editor);
+				} else if("boolean".equals(c)) {
+					if (checkBoxRenderer == null) {
+						checkBoxRenderer = new CheckBoxTableCellRenderer();
+						checkBoxRenderer.setHorizontalAlignment(JLabel.LEFT);
+					}
+					rowRendererValues.add(k, checkBoxRenderer);
+					rowEditor.setEditorAt(k, new DefaultCellEditor(new JCheckBox()));
+				}
+			}
+			
+			TableColumnModel tcm = table.getColumnModel();
+			TableColumn column = tcm.getColumn(1);
+			column.setCellRenderer(rowRendererValues);
+			column.setCellEditor(rowEditor);
+			column = tcm.getColumn(0);
+			column.setCellRenderer(rowRendererKeys);
+			
+			table.setSortable(false);
+			table.packAll();
+			jScrollPane1.setViewportView(table);
 
 			jTabbedPane1.addTab(i.getTitle(), jScrollPane1);
 
@@ -57,8 +104,15 @@ public class PropertyEditPanel extends JPanelExt {
 	
 	@Override
 	public boolean checkOk() {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			for(AbstractProperties i : props) {
+				i.save();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -134,7 +188,37 @@ public class PropertyEditPanel extends JPanelExt {
 			}
 			return "";
 		}
-		
+
+		/* (non-Javadoc)
+		 * @see javax.swing.table.DefaultTableModel#setValueAt(java.lang.Object, int, int)
+		 */
+		@Override
+		public void setValueAt(Object o, int row, int col) {
+			System.out.println("set " + row + " - " + o);
+			try {
+				String c = prd[row].getPropertyType().getSimpleName();
+				if("int".equals(c)) {
+					PropertyUtils.setProperty(prp, prd[row].getName(), Integer.parseInt(o.toString()));
+				} else if("long".equals(c)) {
+					PropertyUtils.setProperty(prp, prd[row].getName(), Long.parseLong(o.toString()));
+				} else if("boolean".equals(c)) {
+					PropertyUtils.setProperty(prp, prd[row].getName(), !(Boolean)o);
+				} else {
+					PropertyUtils.setProperty(prp, prd[row].getName(), o);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.swing.table.DefaultTableModel#isCellEditable(int, int)
+		 */
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return column !=0;
+		}
+
 		
 	}
 }
