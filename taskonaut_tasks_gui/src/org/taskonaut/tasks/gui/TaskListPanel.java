@@ -28,6 +28,7 @@ import org.osgi.service.event.EventHandler;
 import org.taskonaut.api.tasks.ActiveTask;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
+import org.taskonaut.app.GuiConfig;
 import org.taskonaut.app.MainApplication;
 import org.taskonaut.tasks.gui.internal.Activator;
 
@@ -301,8 +302,13 @@ public class TaskListPanel extends JPanelExt {
 			System.out.println("Change task: " + event.getProperty("task_id"));
 			if("org/taskonaut/tasks/gui/events/edit_task".equals(event.getTopic())) {
 				// При редактировании задачи просто обновим данные в таблице
-				((TaskListTableModel)xTable1.getModel()).updateData();
-//				xTable1.packAll();
+				if(GuiConfig.getInstance().isEnableFilterOnFly()) {
+					// чтобы автоматическ применить фильтр придется переформировать таблицу целиком
+					attachTableModel();
+				} else {
+					// иначе просто обновим данные
+					((TaskListTableModel)xTable1.getModel()).updateData();
+				}
 				contentPanel.repaint();
 			} else {
 				// При добавлении новых данных нужно переформировать таблицу полностью

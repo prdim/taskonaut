@@ -19,6 +19,9 @@ public class GuiConfigBeanInfo extends SimpleBeanInfo {
 			p = new PropertyDescriptor("hideMinimized", GuiConfig.class);
 			p.setDisplayName("Скрывать свернутое");
 			pr.add(p);
+			p = new PropertyDescriptor("enableFilterOnFly", GuiConfig.class);
+			p.setDisplayName("Применять фильтр задач на лету");
+			pr.add(p);
 			p = new PropertyDescriptor("testNumber", GuiConfig.class);
 			p.setDisplayName("Тестовый числовой параметр");
 			pr.add(p);

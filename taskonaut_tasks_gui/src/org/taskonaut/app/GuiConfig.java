@@ -22,6 +22,7 @@ public class GuiConfig implements AbstractProperties {
 	private static final String FILE_NAME = "gui_config.xml";
 	
 	private boolean hideMinimized = false;
+	private boolean enableFilterOnFly = false;
 	private int testNumber = 0;
 	private String testString = "test";
 	
@@ -93,6 +94,20 @@ public class GuiConfig implements AbstractProperties {
 	 */
 	public void setTestString(String testString) {
 		this.testString = testString;
+	}
+
+	/**
+	 * @return the enableFilterOnFly
+	 */
+	public boolean isEnableFilterOnFly() {
+		return enableFilterOnFly;
+	}
+
+	/**
+	 * @param enableFilterOnFly the enableFilterOnFly to set
+	 */
+	public void setEnableFilterOnFly(boolean enableFilterOnFly) {
+		this.enableFilterOnFly = enableFilterOnFly;
 	}
 
 	public synchronized void save() {

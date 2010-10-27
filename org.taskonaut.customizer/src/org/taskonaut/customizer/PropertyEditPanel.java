@@ -201,8 +201,8 @@ public class PropertyEditPanel extends JPanelExt {
 					PropertyUtils.setProperty(prp, prd[row].getName(), Integer.parseInt(o.toString()));
 				} else if("long".equals(c)) {
 					PropertyUtils.setProperty(prp, prd[row].getName(), Long.parseLong(o.toString()));
-				} else if("boolean".equals(c)) {
-					PropertyUtils.setProperty(prp, prd[row].getName(), !(Boolean)o);
+//				} else if("boolean".equals(c)) {
+//					PropertyUtils.setProperty(prp, prd[row].getName(), !(Boolean)o);
 				} else {
 					PropertyUtils.setProperty(prp, prd[row].getName(), o);
 				}
