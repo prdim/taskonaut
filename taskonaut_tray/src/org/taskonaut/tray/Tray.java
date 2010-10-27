@@ -226,6 +226,24 @@ public class Tray /* implements IChangeDataListener */{
 			lastTaskMenu.add(t);
 		}
 	}
+	
+	/**
+	 * Обновить список последних задач, удалить из списка уже выполненные задачи
+	 */
+	public void refreshLastTask() {
+		List<TaskItem> tt = new ArrayList<TaskItem>();
+		for(TaskItem i : lastTaskMenu) {
+			TaskItem t = TaskStoreServiceConnector.getStore().readTask(i.getID());
+			if(t!=null) { // задача не удалена из базы
+				if(t.getStateId()!=TaskItem.Status.выполнена && 
+						t.getStateId()!=TaskItem.Status.отменена && 
+						t.getStateId()!=TaskItem.Status.отложена) {
+					tt.add(t);
+				}
+			}
+		}
+		lastTaskMenu = tt;
+	}
 
 	public void setOfflineIcon() {
 		trayIcon.setImage(image1);
@@ -317,6 +335,9 @@ public class Tray /* implements IChangeDataListener */{
 		public void handleEvent(Event event) {
 			trayIcon.getPopupMenu().remove(2);
 			trayIcon.getPopupMenu().insert(getMenu(), 2);
+			refreshLastTask();
+			trayIcon.getPopupMenu().remove(3);
+			trayIcon.getPopupMenu().insert(getLastMenu(), 3);
 		}
 
 	}
