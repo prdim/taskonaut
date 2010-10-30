@@ -93,6 +93,9 @@ public class PropertyEditPanel extends JPanelExt {
 			column.setCellRenderer(rowRendererKeys);
 			
 			table.setSortable(false);
+			table.setCellSelectionEnabled(true);
+			table.setColumnSelectionAllowed(false);
+			table.setRowSelectionAllowed(false);
 			table.packAll();
 			jScrollPane1.setViewportView(table);
 
@@ -194,7 +197,7 @@ public class PropertyEditPanel extends JPanelExt {
 		 */
 		@Override
 		public void setValueAt(Object o, int row, int col) {
-			System.out.println("set " + row + " - " + o);
+//			System.out.println("set " + row + " - " + o);
 			try {
 				String c = prd[row].getPropertyType().getSimpleName();
 				if("int".equals(c)) {

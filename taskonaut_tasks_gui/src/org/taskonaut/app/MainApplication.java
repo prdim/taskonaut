@@ -6,6 +6,10 @@ package org.taskonaut.app;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,12 +51,25 @@ public class MainApplication extends SingleFrameApplication implements IChangeDa
 
 	@Override
 	protected void startup() {
+		getContext().getLocalStorage().setDirectory(new File("./config"));
 		getMainFrame().setJMenuBar(createMenuBar());
 		// TODO Понаблюдать за порядком запуска бандлов и добавлением пунктов меню!!!
 		Activator.getMenuService().addChangeListener(this);
 		show(createMainPanel());
 		isInit = true;
 		updateAllMenu();
+		
+		getMainFrame().addWindowStateListener(new WindowStateListener() {
+			
+			@Override
+			public void windowStateChanged(WindowEvent e) {
+				System.out.println(e);
+				if((e.getNewState() & Frame.ICONIFIED) != 0 && GuiConfig.getInstance().isHideMinimized()) {
+					getMainFrame().setVisible(false);
+				}
+			}
+			
+		});
 	}
 	
 	public void addInternalFrame(JInternalFrame f) {

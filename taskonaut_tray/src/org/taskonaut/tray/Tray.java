@@ -4,6 +4,7 @@
 package org.taskonaut.tray;
 
 import java.awt.AWTException;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Menu;
 import java.awt.MenuItem;
@@ -13,6 +14,8 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,17 +92,17 @@ public class Tray /* implements IChangeDataListener */{
 					MainApplication.getInstance().quit(null);
 				}
 			};
-			ActionListener hideListener = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (((MainApplication) MainApplication.getInstance())
-							.getMainFrame().isVisible())
-						((MainApplication) MainApplication.getInstance())
-								.getMainFrame().setVisible(false);
-					else
-						((MainApplication) MainApplication.getInstance())
-								.getMainFrame().setVisible(true);
-				}
-			};
+//			ActionListener hideListener = new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					if (((MainApplication) MainApplication.getInstance())
+//							.getMainFrame().isVisible())
+//						((MainApplication) MainApplication.getInstance())
+//								.getMainFrame().setVisible(false);
+//					else
+//						((MainApplication) MainApplication.getInstance())
+//								.getMainFrame().setVisible(true);
+//				}
+//			};
 			ActionListener stopListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (!ActiveTask.getInstance().isActive()) {
@@ -133,8 +136,46 @@ public class Tray /* implements IChangeDataListener */{
 			defaultItem.addActionListener(listener);
 			popup.add(defaultItem);
 
-			trayIcon = new TrayIcon(image1, "Скрыть", popup);
-			trayIcon.addActionListener(hideListener);
+			trayIcon = new TrayIcon(image1, "Показать главное окно", popup);
+//			trayIcon.addActionListener(hideListener);
+			trayIcon.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if(e.getButton() == 1){
+						Frame f = ((MainApplication) MainApplication.getInstance()).getMainFrame();
+						f.setVisible(true);
+						if((f.getState() & Frame.ICONIFIED) != 0) {
+							f.setState(f.getState() & Frame.NORMAL);
+						}
+					}
+					
+				}
+			});
 			try {
 				tray.add(trayIcon);
 			} catch (AWTException ex) {
