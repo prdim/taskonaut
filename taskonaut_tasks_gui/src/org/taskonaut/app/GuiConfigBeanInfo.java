@@ -22,9 +22,6 @@ public class GuiConfigBeanInfo extends SimpleBeanInfo {
 			p = new PropertyDescriptor("enableFilterOnFly", GuiConfig.class);
 			p.setDisplayName("Автоматически применять фильтр задач");
 			pr.add(p);
-			p = new PropertyDescriptor("trackMouseOnTaskList", GuiConfig.class);
-			p.setDisplayName("Отслеживать перемещение мыши в списке задач");
-			pr.add(p);
 			
 			return pr.toArray(new PropertyDescriptor[] {});
 		} catch (Exception e) {

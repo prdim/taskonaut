@@ -23,7 +23,6 @@ public class GuiConfig implements AbstractProperties {
 	
 	private boolean hideMinimized = true;
 	private boolean enableFilterOnFly = false;
-	private boolean trackMouseOnTaskList = false;
 	
 	public static GuiConfig getInstance() {
 		if(me == null) {
@@ -79,20 +78,6 @@ public class GuiConfig implements AbstractProperties {
 	 */
 	public void setEnableFilterOnFly(boolean enableFilterOnFly) {
 		this.enableFilterOnFly = enableFilterOnFly;
-	}
-
-	/**
-	 * @return the trackMouseOnTaskList
-	 */
-	public boolean isTrackMouseOnTaskList() {
-		return trackMouseOnTaskList;
-	}
-
-	/**
-	 * @param trackMouseOnTaskList the trackMouseOnTaskList to set
-	 */
-	public void setTrackMouseOnTaskList(boolean trackMouseOnTaskList) {
-		this.trackMouseOnTaskList = trackMouseOnTaskList;
 	}
 
 	public synchronized void save() {

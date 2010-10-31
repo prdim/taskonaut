@@ -41,6 +41,7 @@ import org.taskonaut.tasks.gui.internal.Activator;
 public class TaskListPanel extends JPanelExt {
 	private ChangeTaskEventHandler eventHandler;
 	private FilterPanel filter = new FilterPanel();
+	private JPopupMenu menu;
 	
 	/**
 	 * Конструктор
@@ -52,7 +53,7 @@ public class TaskListPanel extends JPanelExt {
 		eventHandler = new ChangeTaskEventHandler();
 		Activator.regEventHandler(eventHandler, getHandlerServiceProperties("org/taskonaut/tasks/gui/events/*"));
 		
-		JPopupMenu menu = new JPopupMenu();
+		menu = new JPopupMenu();
 		JMenu statusMenu = new JMenu("Статус");
 		ActionListener changeStatusListener = new ActionListener() {
 			
@@ -162,26 +163,39 @@ public class TaskListPanel extends JPanelExt {
 		});
 		menu.add(new JPopupMenu.Separator());
 		menu.add(item4);
-		xTable1.setComponentPopupMenu(menu);
-		if (GuiConfig.getInstance().isTrackMouseOnTaskList()) {
-			xTable1.addMouseMotionListener(new MouseMotionListener() {
-
-				@Override
-				public void mouseMoved(MouseEvent e) {
-					int r = xTable1.rowAtPoint(e.getPoint());
-					int r1 = xTable1.getSelectedRow();
-					if (r != r1) {
-						xTable1.changeSelection(r, 0, false, false);
-					}
+//		xTable1.setComponentPopupMenu(menu);
+		xTable1.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if(e.getButton()>1) showPopup(e);
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(e.getButton()>1) showPopup(e);
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {}
+			
+			private void showPopup(MouseEvent e) {
+				int r = xTable1.rowAtPoint(e.getPoint());
+				int r1 = xTable1.getSelectedRow();
+				if (r != r1) {
+					xTable1.changeSelection(r, 0, false, false);
 				}
-
-				@Override
-				public void mouseDragged(MouseEvent arg0) {
-					// TODO Auto-generated method stub
-
+				if (e.isPopupTrigger()) {
+					menu.show(e.getComponent(), e.getX(), e.getY());
 				}
-			});
-		}
+			}
+		});
 	}
 	
 	private void attachTableModel() {
