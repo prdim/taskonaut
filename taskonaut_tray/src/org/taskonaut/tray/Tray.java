@@ -110,6 +110,10 @@ public class Tray /* implements IChangeDataListener */{
 					}
 					ActiveTask.getInstance().stop();
 					ActiveTask.getInstance().save();
+					Dictionary<String, Object> p = new Hashtable<String, Object>();
+					p.put("task_id", 0);
+					Activator.getEventAdmin().postEvent(
+							new Event("org/taskonaut/tasks/gui/events/active_task",	p));
 					Tray.getInstance().message("Заканчиваю...");
 				}
 			};
@@ -214,9 +218,13 @@ public class Tray /* implements IChangeDataListener */{
 							ActiveTask.getInstance().save();
 						}
 						ActiveTask.getInstance().start(i.getID());
-						addLastTask(i);
-						trayIcon.getPopupMenu().remove(3);
-						trayIcon.getPopupMenu().insert(getLastMenu(), 3);
+						Dictionary<String, Object> p = new Hashtable<String, Object>();
+						p.put("task_id", i.getID());
+						Activator.getEventAdmin().postEvent(
+								new Event("org/taskonaut/tasks/gui/events/active_task",	p));
+//						addLastTask(i);
+//						trayIcon.getPopupMenu().remove(3);
+//						trayIcon.getPopupMenu().insert(getLastMenu(), 3);
 						message("Выполняю " + i.getName());
 					}
 				}
@@ -242,6 +250,10 @@ public class Tray /* implements IChangeDataListener */{
 							ActiveTask.getInstance().save();
 						}
 						ActiveTask.getInstance().start(i.getID());
+						Dictionary<String, Object> p = new Hashtable<String, Object>();
+						p.put("task_id", i.getID());
+						Activator.getEventAdmin().postEvent(
+								new Event("org/taskonaut/tasks/gui/events/active_task",	p));
 						message("Выполняю " + i.getName());
 					}
 				}
@@ -374,6 +386,10 @@ public class Tray /* implements IChangeDataListener */{
 
 		@Override
 		public void handleEvent(Event event) {
+			if("org/taskonaut/tasks/gui/events/active_task".equals(event.getTopic()) && ActiveTask.getInstance().isActive()) {
+				TaskItem t = TaskStoreServiceConnector.getStore().readTask(ActiveTask.getInstance().getActiveTaskId());
+				addLastTask(t);
+			}
 			trayIcon.getPopupMenu().remove(2);
 			trayIcon.getPopupMenu().insert(getMenu(), 2);
 			refreshLastTask();

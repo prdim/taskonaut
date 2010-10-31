@@ -86,6 +86,10 @@ public class TaskListPanel extends JPanelExt {
 					ActiveTask.getInstance().stop();
 				ActiveTask.getInstance().start(t.getID());
 				ActiveTask.getInstance().save();
+				Dictionary<String, Object> p = new Hashtable<String, Object>();
+				p.put("task_id", t.getID());
+				Activator.getEventAdmin().postEvent(
+						new Event("org/taskonaut/tasks/gui/events/active_task",	p));
 			}
 		});
 		menu.add(item2);
@@ -98,6 +102,10 @@ public class TaskListPanel extends JPanelExt {
 			public void actionPerformed(ActionEvent arg0) {
 				ActiveTask.getInstance().stop();
 				ActiveTask.getInstance().save();
+				Dictionary<String, Object> p = new Hashtable<String, Object>();
+				p.put("task_id", 0);
+				Activator.getEventAdmin().postEvent(
+						new Event("org/taskonaut/tasks/gui/events/active_task",	p));
 			}
 		});
 		menu.add(item3);
@@ -309,6 +317,9 @@ public class TaskListPanel extends JPanelExt {
 					// иначе просто обновим данные
 					((TaskListTableModel)xTable1.getModel()).updateData();
 				}
+				contentPanel.repaint();
+			} else if("org/taskonaut/tasks/gui/events/active_task".equals(event.getTopic())) {
+				// Смена активности задачи - просто перерисовать таблицу
 				contentPanel.repaint();
 			} else {
 				// При добавлении новых данных нужно переформировать таблицу полностью
