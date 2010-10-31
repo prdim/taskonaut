@@ -3,6 +3,7 @@
  */
 package org.taskonaut.api.tasks;
 
+import org.taskonaut.api.GlobalConfig;
 import org.taskonaut.util.FileUtils;
 
 /**
@@ -26,7 +27,7 @@ public class ActiveTask {
 	
 	public synchronized void stop() {
 		long t = System.currentTimeMillis();
-		if (taskId != 0) TaskStoreServiceConnector.getStore().addTime(startTime, t, taskId);
+		if (taskId != 0 && (t-startTime) >= (GlobalConfig.getInstance().getMinTaskActive()*1000)) TaskStoreServiceConnector.getStore().addTime(startTime, t, taskId);
 		taskId=0;
 	}
 	

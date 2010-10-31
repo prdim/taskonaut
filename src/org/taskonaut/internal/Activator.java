@@ -2,22 +2,20 @@ package org.taskonaut.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.taskonaut.api.AbstractProperties;
+import org.taskonaut.api.GlobalConfig;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
-//import org.taskonaut.app.MainApplication;
+
 
 public class Activator implements BundleActivator {
 	private static BundleContext context;
-//	private static MenuService menu;
-//	private ServiceRegistration registration;
 	private TaskStoreServiceConnector con;
+	private ServiceRegistration reg;
 
 	static BundleContext getContext() {
 		return context;
 	}
-	
-//	public static synchronized MenuService getMenuService() {
-//		return menu;
-//	}
 	
 	/*
 	 * (non-Javadoc)
@@ -26,9 +24,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 		Activator.context = context;
 		con = new TaskStoreServiceConnector(context);
-//		menu = new MenuService();
-//		registration = context.registerService(IMenuService.class.getName(), menu, null);
-//		Application.launch(MainApplication.class, new String[] {});
+		reg = context.registerService(AbstractProperties.class.getName(), GlobalConfig.getInstance(), null);
 		System.out.println("start core bundle");
 	}
 
@@ -38,9 +34,8 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		Activator.context = null;
-//		menu.clearAllListeners();
-//		registration.unregister();
 		con.close();
+		reg.unregister();
 		System.out.println("stop core bundle");
 	}
 
