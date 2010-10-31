@@ -13,6 +13,5 @@ Import-Package: org.apache.commons.beanutils,
  org.osgi.util.tracker,
  org.taskonaut.api,
  org.taskonaut.app,
- org.taskonaut.tasks.gui,
- org.underworldlabs.swing.table
+ org.taskonaut.tasks.gui
 Bundle-ActivationPolicy: lazy

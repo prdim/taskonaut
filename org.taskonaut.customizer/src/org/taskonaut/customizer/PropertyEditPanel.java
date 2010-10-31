@@ -23,10 +23,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.jdesktop.swingx.JXTable;
 import org.taskonaut.api.AbstractProperties;
 import org.taskonaut.tasks.gui.JPanelExt;
-import org.underworldlabs.swing.table.CheckBoxTableCellRenderer;
-import org.underworldlabs.swing.table.EachRowEditor;
-import org.underworldlabs.swing.table.EachRowRenderer;
-import org.underworldlabs.swing.table.NumberCellEditor;
 
 /**
  * Панель редактирования свойств программы
@@ -204,8 +200,8 @@ public class PropertyEditPanel extends JPanelExt {
 					PropertyUtils.setProperty(prp, prd[row].getName(), Integer.parseInt(o.toString()));
 				} else if("long".equals(c)) {
 					PropertyUtils.setProperty(prp, prd[row].getName(), Long.parseLong(o.toString()));
-//				} else if("boolean".equals(c)) {
-//					PropertyUtils.setProperty(prp, prd[row].getName(), !(Boolean)o);
+				} else if("boolean".equals(c)) {
+					PropertyUtils.setProperty(prp, prd[row].getName(), !(Boolean)PropertyUtils.getProperty(prp, prd[row].getName()));
 				} else {
 					PropertyUtils.setProperty(prp, prd[row].getName(), o);
 				}
