@@ -53,6 +53,39 @@ public class TaskListPanel extends JPanelExt {
 		Activator.regEventHandler(eventHandler, getHandlerServiceProperties("org/taskonaut/tasks/gui/events/*"));
 		
 		JPopupMenu menu = new JPopupMenu();
+		JMenu statusMenu = new JMenu("Статус");
+		ActionListener changeStatusListener = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+					.getData().get(
+						xTable1.convertRowIndexToModel(xTable1
+								.getSelectedRow()));
+				MainApplication
+					.getInstance()
+					.getContext()
+					.getTaskService()
+					.execute(new TaskChangeStatus(MainApplication.getInstance(), t, e.getActionCommand()));
+			}
+		};
+		JMenuItem item = new JMenuItem(TaskItem.Status.выполнена.name());
+		item.addActionListener(changeStatusListener);
+		statusMenu.add(item);
+		item = new JMenuItem(TaskItem.Status.выполняется.name());
+		item.addActionListener(changeStatusListener);
+		statusMenu.add(item);
+		item = new JMenuItem(TaskItem.Status.запланирована.name());
+		item.addActionListener(changeStatusListener);
+		statusMenu.add(item);
+		item = new JMenuItem(TaskItem.Status.отложена.name());
+		item.addActionListener(changeStatusListener);
+		statusMenu.add(item);
+		item = new JMenuItem(TaskItem.Status.отменена.name());
+		item.addActionListener(changeStatusListener);
+		statusMenu.add(item);
+		menu.add(statusMenu);
+		
 		JMenuItem item1 = new JMenuItem();
 		item1.setText("Редактировать");
 		item1.addActionListener(new ActionListener() {
@@ -130,6 +163,25 @@ public class TaskListPanel extends JPanelExt {
 		menu.add(new JPopupMenu.Separator());
 		menu.add(item4);
 		xTable1.setComponentPopupMenu(menu);
+		if (GuiConfig.getInstance().isTrackMouseOnTaskList()) {
+			xTable1.addMouseMotionListener(new MouseMotionListener() {
+
+				@Override
+				public void mouseMoved(MouseEvent e) {
+					int r = xTable1.rowAtPoint(e.getPoint());
+					int r1 = xTable1.getSelectedRow();
+					if (r != r1) {
+						xTable1.changeSelection(r, 0, false, false);
+					}
+				}
+
+				@Override
+				public void mouseDragged(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+		}
 	}
 	
 	private void attachTableModel() {
@@ -293,6 +345,42 @@ public class TaskListPanel extends JPanelExt {
 			Dictionary<String, Object> result = new Hashtable<String, Object>();
 			result.put("task_id", id);
 			return result;
+		}
+	}
+	
+	/**
+	 * Таск смены статуса задачи
+	 * @author spec
+	 *
+	 */
+	public class TaskChangeStatus extends Task<Void, Void> {
+		TaskItem ts;
+		String status;
+		
+		public TaskChangeStatus(Application app, TaskItem t, String newStatus) {
+			super(app);
+			ts = t;
+			status = newStatus;
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			try {
+				// Контроль на существование такого статуса
+				TaskItem.Status.valueOf(status);
+			} catch (Exception e) {
+				e.printStackTrace();
+				setMessage("Ошибка при смене статуса задачи");
+				return null;
+			}
+			ts.setState(status);
+			TaskStoreServiceConnector.getStore().saveTask(ts);
+			Dictionary<String, Object> p = new Hashtable<String, Object>();
+			p.put("task_id", ts.getID());
+			Activator.getEventAdmin().postEvent(
+					new Event("org/taskonaut/tasks/gui/events/edit_task",	p));
+			setMessage("Статус задачи изменен на " + status);
+			return null;
 		}
 	}
 	

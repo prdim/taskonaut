@@ -20,14 +20,12 @@ public class GuiConfigBeanInfo extends SimpleBeanInfo {
 			p.setDisplayName("Скрывать свернутое");
 			pr.add(p);
 			p = new PropertyDescriptor("enableFilterOnFly", GuiConfig.class);
-			p.setDisplayName("Применять фильтр задач на лету");
+			p.setDisplayName("Автоматически применять фильтр задач");
 			pr.add(p);
-			p = new PropertyDescriptor("testNumber", GuiConfig.class);
-			p.setDisplayName("Тестовый числовой параметр");
+			p = new PropertyDescriptor("trackMouseOnTaskList", GuiConfig.class);
+			p.setDisplayName("Отслеживать перемещение мыши в списке задач");
 			pr.add(p);
-			p = new PropertyDescriptor("testString", GuiConfig.class);
-			p.setDisplayName("Тестовый строковый параметр");
-			pr.add(p);
+			
 			return pr.toArray(new PropertyDescriptor[] {});
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -21,10 +21,9 @@ public class GuiConfig implements AbstractProperties {
 	private static transient GuiConfig me = null;
 	private static final String FILE_NAME = "gui_config.xml";
 	
-	private boolean hideMinimized = false;
+	private boolean hideMinimized = true;
 	private boolean enableFilterOnFly = false;
-	private int testNumber = 0;
-	private String testString = "test";
+	private boolean trackMouseOnTaskList = false;
 	
 	public static GuiConfig getInstance() {
 		if(me == null) {
@@ -69,34 +68,6 @@ public class GuiConfig implements AbstractProperties {
 	}
 
 	/**
-	 * @return the testNumber
-	 */
-	public int getTestNumber() {
-		return testNumber;
-	}
-
-	/**
-	 * @param testNumber the testNumber to set
-	 */
-	public void setTestNumber(int testNumber) {
-		this.testNumber = testNumber;
-	}
-
-	/**
-	 * @return the testString
-	 */
-	public String getTestString() {
-		return testString;
-	}
-
-	/**
-	 * @param testString the testString to set
-	 */
-	public void setTestString(String testString) {
-		this.testString = testString;
-	}
-
-	/**
 	 * @return the enableFilterOnFly
 	 */
 	public boolean isEnableFilterOnFly() {
@@ -108,6 +79,20 @@ public class GuiConfig implements AbstractProperties {
 	 */
 	public void setEnableFilterOnFly(boolean enableFilterOnFly) {
 		this.enableFilterOnFly = enableFilterOnFly;
+	}
+
+	/**
+	 * @return the trackMouseOnTaskList
+	 */
+	public boolean isTrackMouseOnTaskList() {
+		return trackMouseOnTaskList;
+	}
+
+	/**
+	 * @param trackMouseOnTaskList the trackMouseOnTaskList to set
+	 */
+	public void setTrackMouseOnTaskList(boolean trackMouseOnTaskList) {
+		this.trackMouseOnTaskList = trackMouseOnTaskList;
 	}
 
 	public synchronized void save() {
