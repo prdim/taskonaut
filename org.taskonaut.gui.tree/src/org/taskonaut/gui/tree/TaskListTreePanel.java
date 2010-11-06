@@ -164,6 +164,7 @@ public class TaskListTreePanel extends JPanelExt {
 		});
 		menu.add(item3);
 		
+		JMenu connMenu = new JMenu("Связи"); 
 		JMenuItem item5 = new JMenuItem("Связать задачи");
 		item5.addActionListener(new ActionListener() {
 			
@@ -181,7 +182,7 @@ public class TaskListTreePanel extends JPanelExt {
 					.execute(new TaskConnect(MainApplication.getInstance(), t));
 			}
 		});
-		menu.add(item5);
+		connMenu.add(item5);
 		JMenuItem item6 = new JMenuItem("Удалить связь");
 		item6.addActionListener(new ActionListener() {
 			
@@ -195,7 +196,8 @@ public class TaskListTreePanel extends JPanelExt {
 					.execute(new TaskDeleteConnect(MainApplication.getInstance(), t));
 			}
 		});
-		menu.add(item6);
+		connMenu.add(item6);
+		menu.add(connMenu);
 		
 		JMenuItem item4 = new JMenuItem();
 		item4.setText("Удалить");
@@ -302,7 +304,7 @@ public class TaskListTreePanel extends JPanelExt {
 		};
 //		xTable1.getColumnModel().getColumn(0).setCellRenderer(new StatusCellRenderer());
 		xTable1.setTreeCellRenderer(new DefaultTreeRenderer(iv,sv));
-		xTable1.setShowsRootHandles(true);
+//		xTable1.setShowsRootHandles(true);
 		xTable1.getColumnModel().getColumn(1).setCellRenderer(new PriorityCellRenderer());
 		xTable1.setColumnControlVisible(true);
 		xTable1.setRowHeight(22); // Подгоняем высоту строки под иконку
@@ -390,6 +392,21 @@ public class TaskListTreePanel extends JPanelExt {
 				setMessage("Выбери родительскую задачу для создания связи");
 				tempTask = ts;
 			} else {
+				// Проверки возможности связи
+				if(ts.getID()==tempTask.getID()) {
+					JOptionPane.showMessageDialog(new Frame(), "Нельзя связать задачу саму с собой", "Ошибка", JOptionPane.ERROR_MESSAGE);
+					tempTask = null;
+					return null;
+				}
+				// граф не может содержать циклических ссылок
+				List<TaskItem> t = TaskStoreServiceConnector.getStore().findAllChildren(tempTask.getID());
+				for(TaskItem k : t) {
+					if(k.getID() == ts.getID()) {
+						JOptionPane.showMessageDialog(new Frame(), "Такое соединение установить нельзя", "Ошибка", JOptionPane.ERROR_MESSAGE);
+						tempTask = null;
+						return null;
+					}
+				}
 				if(JOptionPane.showConfirmDialog(new Frame(), "Связать задачу <" + tempTask.getName() + ">\n c задачей <" + ts.getName() + ">?"
 						, "Вопрос", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					tempTask.setRelation_id(ts.getID());

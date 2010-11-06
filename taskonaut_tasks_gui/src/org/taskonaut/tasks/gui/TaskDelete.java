@@ -37,6 +37,11 @@ public class TaskDelete extends Task<Void, Void> {
 			setMessage("Операция отменена пользователем");
             return null;
 		}
+		// Нужно разорвать все ссылки на текущую задачу
+		for(TaskItem t : TaskStoreServiceConnector.getStore().findChildren(ts.getID())) {
+			t.setRelation_id(0);
+			TaskStoreServiceConnector.getStore().saveTask(t);
+		}
 		TaskStoreServiceConnector.getStore().deleteAllTimeLog(ts.getID());
 		TaskStoreServiceConnector.getStore().deleteTask(ts.getID());
 		Activator.getEventAdmin().postEvent(
