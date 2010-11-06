@@ -100,4 +100,18 @@ public interface ITaskStoreService {
 	 * @return
 	 */
 	public List<TaskItem> getTasksForStatus(TaskItem.Status s);
+	
+	/**
+	 * Возвращает список подчиненных задач (которые ссылаются на данную задачу)
+	 * @param taskId
+	 * @return
+	 */
+	public List<TaskItem> findChildren(long taskId);
+	
+	/**
+	 * Возвращает список всех подчиненных задач до самого последнего уровня иерархии
+	 * @param taskId
+	 * @return
+	 */
+	public List<TaskItem> findAllChildren(long taskId);
 }

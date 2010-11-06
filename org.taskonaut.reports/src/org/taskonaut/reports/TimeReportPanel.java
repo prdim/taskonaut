@@ -19,7 +19,6 @@ import org.taskonaut.tasks.gui.EditTaskPanel;
 import org.taskonaut.tasks.gui.InternalFrameDialog;
 import org.taskonaut.tasks.gui.JPanelExt;
 import org.taskonaut.tasks.gui.TaskListPanel;
-import org.taskonaut.tasks.gui.TaskListPanel.TaskEdit;
 
 /**
  * @author ProlubnikovDA

@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.taskonaut.gui.tree
+Bundle-SymbolicName: org.taskonaut.gui.tree
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.taskonaut.gui.tree.internal.Activator
+Bundle-Vendor: Dmitry Prolubnikov
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.jgoodies.forms.factories,
+ com.jgoodies.forms.layout,
+ org.jdesktop.application,
+ org.jdesktop.swingx,
+ org.jdesktop.swingx.renderer,
+ org.jdesktop.swingx.treetable,
+ org.osgi.framework;version="1.3.0",
+ org.osgi.service.event;version="1.2.0",
+ org.osgi.util.tracker;version="1.4.0",
+ org.taskonaut.api,
+ org.taskonaut.api.tasks,
+ org.taskonaut.app,
+ org.taskonaut.tasks.gui
+Bundle-ActivationPolicy: lazy

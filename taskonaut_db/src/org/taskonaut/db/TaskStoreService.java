@@ -374,5 +374,35 @@ public class TaskStoreService implements ITaskStoreService {
 		return lt;
 	}
 
+	@Override
+	public List<TaskItem> findChildren(long taskId) {
+		List<TaskItem> lt = new ArrayList<TaskItem>();
+		try {
+			Storage<TaskStore> store = repo.storageFor(TaskStore.class);
+			Cursor<TaskStore> c = store.query("relation_id=?").with(taskId).fetch();
+			while(c.hasNext()) {
+				lt.add(c.next());
+			}
+		} catch (SupportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return lt;
+	}
+
+	@Override
+	public List<TaskItem> findAllChildren(long taskId) {
+		List<TaskItem> lt = new ArrayList<TaskItem>();
+		for(TaskItem t : findChildren(taskId)) {
+			List<TaskItem> ltt = findChildren(t.getID());
+			lt.add(t);
+			if(ltt.size()>0) lt.addAll(ltt);
+		}
+		return lt;
+	}
+
 	
 }

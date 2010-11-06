@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.taskonaut.reports
 Bundle-SymbolicName: org.taskonaut.reports
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.1.qualifier
 Bundle-Activator: org.taskonaut.reports.internal.Activator
 Bundle-Vendor: Dmitry Prolubnikov
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

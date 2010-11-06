@@ -287,11 +287,11 @@ public class EditTaskPanel extends JPanelExt {
 		startDate = new JXDatePicker();
 		startDate.setEditable(false);
 		label2 = new JLabel();
-		endDate = new JXDatePicker();
+		endDate = new DateTimePicker();
 //		SimpleDateFormat df;
 //		df = new SimpleDateFormat("dd.MM.yyyy H:mm:ss");
 //		endDate.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(df)));
-//		endDate.setFormats("dd.MM.yyyy H:mm");
+		endDate.setFormats("dd.MM.yyyy H:mm");
 		label4 = new JLabel();
 		scrollPane1 = new JScrollPane();
 		commentText = new JTextArea();
@@ -396,6 +396,7 @@ public class EditTaskPanel extends JPanelExt {
 			panel2.add(label7, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 				new Insets(0, 0, 0, 5), 0, 0));
+			relationTask.addItem("Выбери задачу для перехода");
 			panel2.add(relationTask, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 				new Insets(0, 0, 0, 0), 0, 0));
@@ -438,7 +439,7 @@ public class EditTaskPanel extends JPanelExt {
 	private JLabel label3;
 	private JXDatePicker startDate;
 	private JLabel label2;
-	private JXDatePicker endDate;
+	private DateTimePicker endDate;
 	private JLabel label4;
 	private JScrollPane scrollPane1;
 	private JTextArea commentText;

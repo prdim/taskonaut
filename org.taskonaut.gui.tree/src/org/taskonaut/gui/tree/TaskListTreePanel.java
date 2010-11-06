@@ -1,14 +1,16 @@
 /**
  * 
  */
-package org.taskonaut.tasks.gui;
+package org.taskonaut.gui.tree;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -19,7 +21,13 @@ import javax.swing.table.TableCellRenderer;
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
 
+import org.jdesktop.application.Application;
+import org.jdesktop.application.Task;
 import org.jdesktop.swingx.*;
+import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
+import org.jdesktop.swingx.renderer.IconValue;
+import org.jdesktop.swingx.renderer.StringValue;
+import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
@@ -28,7 +36,15 @@ import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.app.GuiConfig;
 import org.taskonaut.app.MainApplication;
-import org.taskonaut.tasks.gui.internal.Activator;
+import org.taskonaut.gui.tree.internal.Activator;
+import org.taskonaut.tasks.gui.DefaultDialog;
+import org.taskonaut.tasks.gui.EditTaskPanel;
+import org.taskonaut.tasks.gui.FilterPanel;
+import org.taskonaut.tasks.gui.InternalFrameDialog;
+import org.taskonaut.tasks.gui.JPanelExt;
+import org.taskonaut.tasks.gui.TaskChangeStatus;
+import org.taskonaut.tasks.gui.TaskDelete;
+import org.taskonaut.tasks.gui.TaskEdit;
 
 /**
  * Список задач
@@ -36,15 +52,16 @@ import org.taskonaut.tasks.gui.internal.Activator;
  * @author spec
  *
  */
-public class TaskListPanel extends JPanelExt {
+public class TaskListTreePanel extends JPanelExt {
 	private ChangeTaskEventHandler eventHandler;
 	private FilterPanel filter = new FilterPanel();
 	private JPopupMenu menu;
+	private TaskItem tempTask = null;
 	
 	/**
 	 * Конструктор
 	 */
-	public TaskListPanel() {
+	public TaskListTreePanel() {
 //		super();
 		initComponents();
 		attachTableModel();
@@ -57,10 +74,11 @@ public class TaskListPanel extends JPanelExt {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TaskItem t = ((TaskListTableModel) xTable1.getModel())
-					.getData().get(
-						xTable1.convertRowIndexToModel(xTable1
-								.getSelectedRow()));
+				TaskItem t = (TaskItem)xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+//				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+//					.getData().get(
+//						xTable1.convertRowIndexToModel(xTable1
+//								.getSelectedRow()));
 				MainApplication
 					.getInstance()
 					.getContext()
@@ -91,10 +109,13 @@ public class TaskListPanel extends JPanelExt {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				TaskItem t = ((TaskListTableModel) xTable1.getModel())
-						.getData().get(
-								xTable1.convertRowIndexToModel(xTable1
-										.getSelectedRow()));
+//				System.out.println(xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent());
+//				System.out.println(xTable1.getSelectedRow());
+				TaskItem t = (TaskItem)xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+//				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+//						.getData().get(
+//								xTable1.convertRowIndexToModel(xTable1
+//										.getSelectedRow()));
 				MainApplication
 						.getInstance()
 						.getContext()
@@ -110,10 +131,11 @@ public class TaskListPanel extends JPanelExt {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				TaskItem t = ((TaskListTableModel) xTable1.getModel())
-				.getData().get(
-						xTable1.convertRowIndexToModel(xTable1
-								.getSelectedRow()));
+				TaskItem t = (TaskItem)xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+//				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+//				.getData().get(
+//						xTable1.convertRowIndexToModel(xTable1
+//								.getSelectedRow()));
 				if(ActiveTask.getInstance().isActive())
 					ActiveTask.getInstance().stop();
 				ActiveTask.getInstance().start(t.getID());
@@ -142,21 +164,55 @@ public class TaskListPanel extends JPanelExt {
 		});
 		menu.add(item3);
 		
+		JMenuItem item5 = new JMenuItem("Связать задачи");
+		item5.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TaskItem t = (TaskItem)xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+//				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+//				.getData().get(
+//						xTable1.convertRowIndexToModel(xTable1
+//								.getSelectedRow()));
+				MainApplication
+					.getInstance()
+					.getContext()
+					.getTaskService()
+					.execute(new TaskConnect(MainApplication.getInstance(), t));
+			}
+		});
+		menu.add(item5);
+		JMenuItem item6 = new JMenuItem("Удалить связь");
+		item6.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TaskItem t = (TaskItem)xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+				MainApplication
+					.getInstance()
+					.getContext()
+					.getTaskService()
+					.execute(new TaskDeleteConnect(MainApplication.getInstance(), t));
+			}
+		});
+		menu.add(item6);
+		
 		JMenuItem item4 = new JMenuItem();
 		item4.setText("Удалить");
 		item4.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				TaskItem t = ((TaskListTableModel) xTable1.getModel())
-				.getData().get(
-						xTable1.convertRowIndexToModel(xTable1
-								.getSelectedRow()));
+				TaskItem t = (TaskItem)xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+//				TaskItem t = ((TaskListTableModel) xTable1.getModel())
+//				.getData().get(
+//						xTable1.convertRowIndexToModel(xTable1
+//								.getSelectedRow()));
 				MainApplication
-				.getInstance()
-				.getContext()
-				.getTaskService()
-				.execute(new TaskDelete(MainApplication.getInstance(), t));
+					.getInstance()
+					.getContext()
+					.getTaskService()
+					.execute(new TaskDelete(MainApplication.getInstance(), t));
 			}
 		});
 		menu.add(new JPopupMenu.Separator());
@@ -199,21 +255,64 @@ public class TaskListPanel extends JPanelExt {
 	private void attachTableModel() {
 		// TODO Вылетает исключение при обновлении данных.
 		xTable1.setVisible(false);
-		xTable1.setModel(new DefaultTableModel());
+//		xTable1.setModel(new DefaultTableModel());
 //		System.out.println("-1-");
 		TaskListTableModel t = new TaskListTableModel();
 //		System.out.println("-2-");
-		xTable1.setModel(t);
+		xTable1.setTreeTableModel(t);
 //		System.out.println("-3-");
-		xTable1.getColumnModel().getColumn(0).setCellRenderer(new StatusCellRenderer());
+		
+		org.jdesktop.swingx.renderer.StringValue sv = new StringValue() {
+			
+			@Override
+			public String getString(Object arg0) {
+				TaskItem t = (TaskItem)arg0;
+//				return t.getState();
+				return "";
+			}
+		};
+		IconValue iv  = new IconValue() {
+			
+			@Override
+			public Icon getIcon(Object arg0) {
+				TaskItem t = (TaskItem)arg0;
+				TaskItem.Status value = t.getStateId();
+				Icon ico = null;
+				if(ActiveTask.getInstance().getActiveTaskId() == t.getID()) {
+				ico = MainApplication.getInstance().getContext().
+					getResourceMap(TaskListTreePanel.class).getIcon("ico_play");
+				} else if(TaskItem.Status.запланирована.equals(value)) {
+					ico = MainApplication.getInstance().getContext().
+						getResourceMap(TaskListTreePanel.class).getIcon("ico_chronometer");
+				} else if(TaskItem.Status.выполняется.equals(value)) {
+					ico = MainApplication.getInstance().getContext().
+						getResourceMap(TaskListTreePanel.class).getIcon("ico_player_time");
+				} else if(TaskItem.Status.выполнена.equals(value)) {
+					ico = MainApplication.getInstance().getContext().
+						getResourceMap(TaskListTreePanel.class).getIcon("ico_success");
+				} else if(TaskItem.Status.отложена.equals(value)) {
+					ico = MainApplication.getInstance().getContext().
+						getResourceMap(TaskListTreePanel.class).getIcon("ico_cancel2");
+				} else if(TaskItem.Status.отменена.equals(value)) {
+					ico = MainApplication.getInstance().getContext().
+						getResourceMap(TaskListTreePanel.class).getIcon("ico_cancel1");
+				}	
+				return ico;
+			}
+		};
+//		xTable1.getColumnModel().getColumn(0).setCellRenderer(new StatusCellRenderer());
+		xTable1.setTreeCellRenderer(new DefaultTreeRenderer(iv,sv));
+		xTable1.setShowsRootHandles(true);
 		xTable1.getColumnModel().getColumn(1).setCellRenderer(new PriorityCellRenderer());
 		xTable1.setColumnControlVisible(true);
 		xTable1.setRowHeight(22); // Подгоняем высоту строки под иконку
 		xTable1.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		xTable1.expandAll();
 		xTable1.packAll();
-		xTable1.getColumnModel().getColumn(0).setPreferredWidth(24);
+//		xTable1.getColumnModel().getColumn(0).setPreferredWidth(24);
 		xTable1.getColumnModel().getColumn(1).setPreferredWidth(24);
 		xTable1.setVisible(true);
+//		xTable1.putClientProperty("JTree.lineStyle", "Angled"); //???
 	}
 
 	/* (non-Javadoc)
@@ -241,8 +340,9 @@ public class TaskListPanel extends JPanelExt {
 	private void xTable1MouseClicked(MouseEvent e) {
 		if(e.getClickCount()>=2) {
 //			System.out.println(xTable1.convertRowIndexToModel(xTable1.getSelectedRow()));
-			TaskItem t = ((TaskListTableModel)xTable1.getModel()).
-				getData().get(xTable1.convertRowIndexToModel(xTable1.getSelectedRow()));
+			TaskItem t = (TaskItem)xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+//			TaskItem t = ((TaskListTableModel)xTable1.getModel()).
+//				getData().get(xTable1.convertRowIndexToModel(xTable1.getSelectedRow()));
 			MainApplication.getInstance().getContext().getTaskService().
 				execute(new TaskEdit(MainApplication.getInstance(), t));
 		}
@@ -272,6 +372,77 @@ public class TaskListPanel extends JPanelExt {
 	}
 	
 	/**
+	 * Таск создания связи между задачами
+	 * @author spec
+	 *
+	 */
+	public class TaskConnect extends Task<Void, Void> {
+		TaskItem ts;
+		
+		public TaskConnect(Application app, TaskItem t) {
+			super(app);
+			ts= t;
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			if(tempTask==null) {
+				setMessage("Выбери родительскую задачу для создания связи");
+				tempTask = ts;
+			} else {
+				if(JOptionPane.showConfirmDialog(new Frame(), "Связать задачу <" + tempTask.getName() + ">\n c задачей <" + ts.getName() + ">?"
+						, "Вопрос", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					tempTask.setRelation_id(ts.getID());
+					TaskStoreServiceConnector.getStore().saveTask(tempTask);
+					Dictionary<String, Object> p = new Hashtable<String, Object>();
+					p.put("task_id", ts.getID());
+					Activator.getEventAdmin().postEvent(
+							new Event("org/taskonaut/tasks/gui/events/edit_task",	p));
+					setMessage("Связь между задачами создана успешно");
+					tempTask = null;
+					attachTableModel();
+				} else {
+					tempTask = null;
+				}
+			}
+			
+			return null;
+		}
+	}
+	
+	/**
+	 * Таск создания связи между задачами
+	 * @author spec
+	 *
+	 */
+	public class TaskDeleteConnect extends Task<Void, Void> {
+		TaskItem ts;
+		
+		public TaskDeleteConnect(Application app, TaskItem t) {
+			super(app);
+			ts= t;
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			if(ts.getRelation_id()==0) {
+				setMessage("Эта задача ни с чем не связана");
+			} else {
+				ts.setRelation_id(0);
+				TaskStoreServiceConnector.getStore().saveTask(ts);
+				Dictionary<String, Object> p = new Hashtable<String, Object>();
+				p.put("task_id", ts.getID());
+				Activator.getEventAdmin().postEvent(
+						new Event("org/taskonaut/tasks/gui/events/edit_task",	p));
+				setMessage("Связь между задачами удалена успешно");
+				tempTask = null;
+				attachTableModel();
+			}
+			return null;
+		}
+	}
+	
+	/**
 	 * Обработчик события изменения задачи
 	 * Необходимо обновить список задач
 	 * @author spec
@@ -290,7 +461,7 @@ public class TaskListPanel extends JPanelExt {
 					attachTableModel();
 				} else {
 					// иначе просто обновим данные
-					((TaskListTableModel)xTable1.getModel()).updateData();
+//					((TaskListTableModel)xTable1.getModel()).updateData();
 				}
 				contentPanel.repaint();
 			} else if("org/taskonaut/tasks/gui/events/active_task".equals(event.getTopic())) {
@@ -317,55 +488,6 @@ public class TaskListPanel extends JPanelExt {
 	  }
 	
 	/**
-	 * Рисует ячейку таблицы со статусом задачи
-	 * @author spec
-	 *
-	 */
-	private class StatusCellRenderer implements TableCellRenderer {
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-			JPanel p = new JPanel(new BorderLayout());
-			TaskItem t = ((TaskListTableModel)xTable1.getModel()).
-				getData().get(xTable1.convertRowIndexToModel(row));
-			if(ActiveTask.getInstance().getActiveTaskId() == t.getID()) {
-				Icon ico = MainApplication.getInstance().getContext().
-				getResourceMap(TaskListPanel.class).getIcon("ico_play");
-				p.add(new JLabel(ico));
-				p.setToolTipText("Текущая");
-			} else if(TaskItem.Status.запланирована.equals(value)) {
-				Icon ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListPanel.class).getIcon("ico_chronometer");
-				p.add(new JLabel(ico));
-				p.setToolTipText(TaskItem.Status.запланирована.name());
-			} else if(TaskItem.Status.выполняется.equals(value)) {
-				Icon ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListPanel.class).getIcon("ico_player_time");
-				p.add(new JLabel(ico));
-				p.setToolTipText(TaskItem.Status.выполняется.name());
-			} else if(TaskItem.Status.выполнена.equals(value)) {
-				Icon ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListPanel.class).getIcon("ico_success");
-				p.add(new JLabel(ico));
-				p.setToolTipText(TaskItem.Status.выполнена.name());
-			} else if(TaskItem.Status.отложена.equals(value)) {
-				Icon ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListPanel.class).getIcon("ico_cancel2");
-				p.add(new JLabel(ico));
-				p.setToolTipText(TaskItem.Status.отложена.name());
-			} else if(TaskItem.Status.отменена.equals(value)) {
-				Icon ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListPanel.class).getIcon("ico_cancel1");
-				p.add(new JLabel(ico));
-				p.setToolTipText(TaskItem.Status.отменена.name());
-			}
-			return p;
-		}
-		
-	}
-	
-	/**
 	 * Рисует ячейку таблицы с приоритетом задачи
 	 * @author spec
 	 *
@@ -381,17 +503,17 @@ public class TaskListPanel extends JPanelExt {
 				p.setToolTipText(TaskItem.Priority.средний.name());
 			} else if(TaskItem.Priority.низкий.equals(value)) {
 				Icon ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListPanel.class).getIcon("ico_down");
+					getResourceMap(TaskListTreePanel.class).getIcon("ico_down");
 				p.add(new JLabel(ico));
 				p.setToolTipText(TaskItem.Priority.низкий.name());
 			} else if(TaskItem.Priority.высокий.equals(value)) {
 				Icon ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListPanel.class).getIcon("ico_up");
+					getResourceMap(TaskListTreePanel.class).getIcon("ico_up");
 				p.add(new JLabel(ico));
 				p.setToolTipText(TaskItem.Priority.высокий.name());
 			} else if(TaskItem.Priority.критично.equals(value)) {
 				Icon ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListPanel.class).getIcon("ico_critical");
+					getResourceMap(TaskListTreePanel.class).getIcon("ico_critical");
 				p.add(new JLabel(ico));
 				p.setToolTipText(TaskItem.Priority.критично.name());
 			}
@@ -405,74 +527,150 @@ public class TaskListPanel extends JPanelExt {
 	 * @author spec
 	 *
 	 */
-	private class TaskListTableModel extends AbstractTableModel {
+	private class TaskListTableModel extends AbstractTreeTableModel {
 		private String[] columns = {"Статус", "Приоритет", "Задача", "Срок"};
-		private Vector<TaskItem> data;
-
-		/**
-		 * 
-		 */
+//		private Vector<TaskItem> data;
+		private TaskItem root; 
+		
 		public TaskListTableModel() {
-			data = new Vector<TaskItem>();
-//			for(long i : TaskList.getInstance().getTaskList().keySet()) {
-//				data.add(TaskList.getInstance().getTask(i));
-//			}
-			for(TaskItem i : TaskStoreServiceConnector.getStore().readAllTasks()) {
-				if(!filter.isFiltered(i))
-					data.add(i);
-			}
+			root = TaskStoreServiceConnector.getStore().createNewTask("Все задачи");
+			root.setID(0);
 		}
 		
-		/**
-		 * Обновить данные в таблицы после их изменения
-		 */
-		public void updateData() {
-			for(int i=0; i<data.size(); i++) {
-//				data.set(i, TaskList.getInstance().getTask(data.get(i).getId()));
-				data.set(i, TaskStoreServiceConnector.getStore().readTask(data.get(i).getID()));
-			}
-		}
-		
-		public Vector<TaskItem> getData() {
-			return data;
-		}
-
-		/* (non-Javadoc)
-		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-		 */
-		@Override
-		public String getColumnName(int c) {
-			return columns[c];
-		}
-
 		@Override
 		public int getColumnCount() {
 			return columns.length;
 		}
-
 		@Override
-		public int getRowCount() {
-			return data.size();
-		}
-
-		@Override
-		public Object getValueAt(int r, int c) {
+		public Object getValueAt(Object node, int column) {
+			TaskItem t = (TaskItem)node;
 			SimpleDateFormat df;
 			String s = "";
-			switch(c) {
+			switch(column) {
 			case 0:
-				return data.get(r).getStateId();
+				return t.getStateId();
 			case 1:
-				return data.get(r).getPriorityId();
+				return t.getPriorityId();
 			case 2:
-				return data.get(r).getName();
+				return t.getName();
 			case 3:
 				df = new SimpleDateFormat("yyyy-MM-dd");
-				s = df.format(new Date(data.get(r).getExecute()));
+				s = df.format(new Date(t.getExecute()));
 				return s;
 			}
-			return data.get(r).getName();
+			return t.getName();
 		}
+		
+		@Override
+		public Object getChild(Object parent, int index) {
+			TaskItem t = (TaskItem)parent;
+			List<TaskItem> lt = readFilteredChildren(t);
+			return lt.get(index);
+		}
+		
+		@Override
+		public int getChildCount(Object parent) {
+			TaskItem t = (TaskItem)parent;
+			List<TaskItem> lt = readFilteredChildren(t);
+			return lt.size();
+		}
+		
+		@Override
+		public int getIndexOfChild(Object parent, Object child) {
+			TaskItem t1 = (TaskItem) parent;
+			TaskItem t2 = (TaskItem) child;
+			List<TaskItem> lt = readFilteredChildren(t1);
+			return lt.indexOf(t2);
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.jdesktop.swingx.treetable.AbstractTreeTableModel#getColumnName(int)
+		 */
+		@Override
+		public String getColumnName(int column) {
+			return columns[column];
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.jdesktop.swingx.treetable.AbstractTreeTableModel#getRoot()
+		 */
+		@Override
+		public Object getRoot() {
+			return root;
+		}
+		
+		private List<TaskItem> readFilteredChildren(TaskItem parent) {
+			List<TaskItem> lt = new ArrayList<TaskItem>();
+			for(TaskItem t : TaskStoreServiceConnector.getStore().findChildren(parent.getID())) {
+				if(!filter.isFiltered(t)) lt.add(t);
+			}
+			return lt;
+		}
+
+//		/**
+//		 * 
+//		 */
+//		public TaskListTableModel() {
+//			data = new Vector<TaskItem>();
+////			for(long i : TaskList.getInstance().getTaskList().keySet()) {
+////				data.add(TaskList.getInstance().getTask(i));
+////			}
+//			for(TaskItem i : TaskStoreServiceConnector.getStore().readAllTasks()) {
+//				if(!filter.isFiltered(i))
+//					data.add(i);
+//			}
+//		}
+//		
+//		/**
+//		 * Обновить данные в таблицы после их изменения
+//		 */
+//		public void updateData() {
+//			for(int i=0; i<data.size(); i++) {
+////				data.set(i, TaskList.getInstance().getTask(data.get(i).getId()));
+//				data.set(i, TaskStoreServiceConnector.getStore().readTask(data.get(i).getID()));
+//			}
+//		}
+//		
+//		public Vector<TaskItem> getData() {
+//			return data;
+//		}
+//
+//		/* (non-Javadoc)
+//		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+//		 */
+//		@Override
+//		public String getColumnName(int c) {
+//			return columns[c];
+//		}
+//
+//		@Override
+//		public int getColumnCount() {
+//			return columns.length;
+//		}
+//
+//		@Override
+//		public int getRowCount() {
+//			return data.size();
+//		}
+//
+//		@Override
+//		public Object getValueAt(int r, int c) {
+//			SimpleDateFormat df;
+//			String s = "";
+//			switch(c) {
+//			case 0:
+//				return data.get(r).getStateId();
+//			case 1:
+//				return data.get(r).getPriorityId();
+//			case 2:
+//				return data.get(r).getName();
+//			case 3:
+//				df = new SimpleDateFormat("yyyy-MM-dd");
+//				s = df.format(new Date(data.get(r).getExecute()));
+//				return s;
+//			}
+//			return data.get(r).getName();
+//		}
 		
 	}
 
@@ -484,7 +682,7 @@ public class TaskListPanel extends JPanelExt {
 //		dialogPane = new JPanel();
 		contentPanel = new JPanel();
 		scrollPane1 = new JScrollPane();
-		xTable1 = new JXTable();
+		xTable1 = new JXTreeTable();
 		buttonBar = new JPanel();
 		okButton = new JButton();
 		panel1 = new JPanel();
@@ -559,7 +757,7 @@ public class TaskListPanel extends JPanelExt {
 //	private JPanel dialogPane;
 	private JPanel contentPanel;
 	private JScrollPane scrollPane1;
-	private JXTable xTable1;
+	private JXTreeTable xTable1;
 	private JPanel buttonBar;
 	private JButton okButton;
 	private JPanel panel1;
