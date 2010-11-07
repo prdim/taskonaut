@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: taskonaut_tasks_gui
 Bundle-SymbolicName: org.taskonaut.tasks.gui
-Bundle-Version: 0.1.2.qualifier
+Bundle-Version: 0.1.3.qualifier
 Bundle-Activator: org.taskonaut.tasks.gui.internal.Activator
 Bundle-Vendor: Prolubnikov Dmitry
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

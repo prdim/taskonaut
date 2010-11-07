@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.taskonaut.db
 Bundle-SymbolicName: org.taskonaut.db
-Bundle-Version: 0.1.1.qualifier
+Bundle-Version: 0.1.2.qualifier
 Bundle-Activator: org.taskonaut.db.internal.Activator
 Bundle-Vendor: Prolubnikov Dmitry
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
