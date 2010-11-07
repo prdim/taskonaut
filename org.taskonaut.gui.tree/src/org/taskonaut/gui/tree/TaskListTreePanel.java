@@ -35,6 +35,7 @@ import org.taskonaut.api.tasks.ActiveTask;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.app.GuiConfig;
+import org.taskonaut.app.GuiDefaultSize;
 import org.taskonaut.app.MainApplication;
 import org.taskonaut.gui.tree.internal.Activator;
 import org.taskonaut.tasks.gui.DefaultDialog;
@@ -64,6 +65,12 @@ public class TaskListTreePanel extends JPanelExt {
 	public TaskListTreePanel() {
 //		super();
 		initComponents();
+		if(GuiDefaultSize.getInstance().isFormStored("TaskListTreePanel")) {
+			contentPanel.setPreferredSize(GuiDefaultSize.getInstance().getDimensionForm("TaskListTreePanel"));
+		} else {
+			contentPanel.setPreferredSize(new Dimension(480, 240));
+		}
+		
 		attachTableModel();
 		eventHandler = new ChangeTaskEventHandler();
 		Activator.regEventHandler(eventHandler, getHandlerServiceProperties("org/taskonaut/tasks/gui/events/*"));
@@ -197,6 +204,28 @@ public class TaskListTreePanel extends JPanelExt {
 			}
 		});
 		connMenu.add(item6);
+		JMenuItem item7 = new JMenuItem("Добавить подзадачу");
+		item7.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TaskItem t = (TaskItem)xTable1.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+				TaskItem nt = TaskStoreServiceConnector.getStore().createNewTask("");
+				nt.setRelation_id(t.getID());
+				DefaultDialog d = new DefaultDialog(new JFrame(), true);
+				EditTaskPanel p = new EditTaskPanel(nt, true);
+				d.setPanel(p);
+				d.setTitle("Создание новой задачи");
+				d.setVisible(true);
+				if(p.ok) {
+					TaskStoreServiceConnector.getStore().saveTask(p.getTask());
+					Dictionary<String, Object> dc = new Hashtable<String, Object>();
+					dc.put("task_id", p.getTask().getID());
+					Activator.getEventAdmin().postEvent(new Event("org/taskonaut/tasks/gui/events/new_task", dc));
+				}
+			}
+		});
+		connMenu.add(item7);
 		menu.add(connMenu);
 		
 		JMenuItem item4 = new JMenuItem();
@@ -254,67 +283,64 @@ public class TaskListTreePanel extends JPanelExt {
 		});
 	}
 	
-	private void attachTableModel() {
+	private synchronized void attachTableModel() {
 		// TODO Вылетает исключение при обновлении данных.
-		xTable1.setVisible(false);
-//		xTable1.setModel(new DefaultTableModel());
-//		System.out.println("-1-");
-		TaskListTableModel t = new TaskListTableModel();
-//		System.out.println("-2-");
-		xTable1.setTreeTableModel(t);
-//		System.out.println("-3-");
-		
-		org.jdesktop.swingx.renderer.StringValue sv = new StringValue() {
+		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
-			public String getString(Object arg0) {
-				TaskItem t = (TaskItem)arg0;
-//				return t.getState();
-				return "";
+			public void run() {
+				xTable1.setVisible(false);
+				TaskListTableModel t = new TaskListTableModel();
+				xTable1.setTreeTableModel(t);
+				
+				org.jdesktop.swingx.renderer.StringValue sv = new StringValue() {
+					
+					@Override
+					public String getString(Object arg0) {
+						TaskItem t = (TaskItem)arg0;
+						return "";
+					}
+				};
+				IconValue iv  = new IconValue() {
+					
+					@Override
+					public Icon getIcon(Object arg0) {
+						TaskItem t = (TaskItem)arg0;
+						TaskItem.Status value = t.getStateId();
+						Icon ico = null;
+						if(ActiveTask.getInstance().getActiveTaskId() == t.getID()) {
+						ico = MainApplication.getInstance().getContext().
+							getResourceMap(TaskListTreePanel.class).getIcon("ico_play");
+						} else if(TaskItem.Status.запланирована.equals(value)) {
+							ico = MainApplication.getInstance().getContext().
+								getResourceMap(TaskListTreePanel.class).getIcon("ico_chronometer");
+						} else if(TaskItem.Status.выполняется.equals(value)) {
+							ico = MainApplication.getInstance().getContext().
+								getResourceMap(TaskListTreePanel.class).getIcon("ico_player_time");
+						} else if(TaskItem.Status.выполнена.equals(value)) {
+							ico = MainApplication.getInstance().getContext().
+								getResourceMap(TaskListTreePanel.class).getIcon("ico_success");
+						} else if(TaskItem.Status.отложена.equals(value)) {
+							ico = MainApplication.getInstance().getContext().
+								getResourceMap(TaskListTreePanel.class).getIcon("ico_cancel2");
+						} else if(TaskItem.Status.отменена.equals(value)) {
+							ico = MainApplication.getInstance().getContext().
+								getResourceMap(TaskListTreePanel.class).getIcon("ico_cancel1");
+						}	
+						return ico;
+					}
+				};
+				xTable1.setTreeCellRenderer(new DefaultTreeRenderer(iv,sv));
+				xTable1.getColumnModel().getColumn(1).setCellRenderer(new PriorityCellRenderer());
+				xTable1.setColumnControlVisible(true);
+				xTable1.setRowHeight(22); // Подгоняем высоту строки под иконку
+				xTable1.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+				xTable1.expandAll();
+				xTable1.packAll();
+				xTable1.getColumnModel().getColumn(1).setPreferredWidth(24);
+				xTable1.setVisible(true);
 			}
-		};
-		IconValue iv  = new IconValue() {
-			
-			@Override
-			public Icon getIcon(Object arg0) {
-				TaskItem t = (TaskItem)arg0;
-				TaskItem.Status value = t.getStateId();
-				Icon ico = null;
-				if(ActiveTask.getInstance().getActiveTaskId() == t.getID()) {
-				ico = MainApplication.getInstance().getContext().
-					getResourceMap(TaskListTreePanel.class).getIcon("ico_play");
-				} else if(TaskItem.Status.запланирована.equals(value)) {
-					ico = MainApplication.getInstance().getContext().
-						getResourceMap(TaskListTreePanel.class).getIcon("ico_chronometer");
-				} else if(TaskItem.Status.выполняется.equals(value)) {
-					ico = MainApplication.getInstance().getContext().
-						getResourceMap(TaskListTreePanel.class).getIcon("ico_player_time");
-				} else if(TaskItem.Status.выполнена.equals(value)) {
-					ico = MainApplication.getInstance().getContext().
-						getResourceMap(TaskListTreePanel.class).getIcon("ico_success");
-				} else if(TaskItem.Status.отложена.equals(value)) {
-					ico = MainApplication.getInstance().getContext().
-						getResourceMap(TaskListTreePanel.class).getIcon("ico_cancel2");
-				} else if(TaskItem.Status.отменена.equals(value)) {
-					ico = MainApplication.getInstance().getContext().
-						getResourceMap(TaskListTreePanel.class).getIcon("ico_cancel1");
-				}	
-				return ico;
-			}
-		};
-//		xTable1.getColumnModel().getColumn(0).setCellRenderer(new StatusCellRenderer());
-		xTable1.setTreeCellRenderer(new DefaultTreeRenderer(iv,sv));
-//		xTable1.setShowsRootHandles(true);
-		xTable1.getColumnModel().getColumn(1).setCellRenderer(new PriorityCellRenderer());
-		xTable1.setColumnControlVisible(true);
-		xTable1.setRowHeight(22); // Подгоняем высоту строки под иконку
-		xTable1.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
-		xTable1.expandAll();
-		xTable1.packAll();
-//		xTable1.getColumnModel().getColumn(0).setPreferredWidth(24);
-		xTable1.getColumnModel().getColumn(1).setPreferredWidth(24);
-		xTable1.setVisible(true);
-//		xTable1.putClientProperty("JTree.lineStyle", "Angled"); //???
+		});
 	}
 
 	/* (non-Javadoc)
@@ -331,6 +357,8 @@ public class TaskListTreePanel extends JPanelExt {
 	 */
 	@Override
 	public void beforeClose() {
+		GuiDefaultSize.getInstance().storeDimensionForm("TaskListTreePanel", contentPanel.getSize());
+		GuiDefaultSize.getInstance().save();
 		System.out.println("Close it");
 		Activator.unregEventHandler(eventHandler);
 	}
@@ -623,72 +651,6 @@ public class TaskListTreePanel extends JPanelExt {
 			}
 			return lt;
 		}
-
-//		/**
-//		 * 
-//		 */
-//		public TaskListTableModel() {
-//			data = new Vector<TaskItem>();
-////			for(long i : TaskList.getInstance().getTaskList().keySet()) {
-////				data.add(TaskList.getInstance().getTask(i));
-////			}
-//			for(TaskItem i : TaskStoreServiceConnector.getStore().readAllTasks()) {
-//				if(!filter.isFiltered(i))
-//					data.add(i);
-//			}
-//		}
-//		
-//		/**
-//		 * Обновить данные в таблицы после их изменения
-//		 */
-//		public void updateData() {
-//			for(int i=0; i<data.size(); i++) {
-////				data.set(i, TaskList.getInstance().getTask(data.get(i).getId()));
-//				data.set(i, TaskStoreServiceConnector.getStore().readTask(data.get(i).getID()));
-//			}
-//		}
-//		
-//		public Vector<TaskItem> getData() {
-//			return data;
-//		}
-//
-//		/* (non-Javadoc)
-//		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
-//		 */
-//		@Override
-//		public String getColumnName(int c) {
-//			return columns[c];
-//		}
-//
-//		@Override
-//		public int getColumnCount() {
-//			return columns.length;
-//		}
-//
-//		@Override
-//		public int getRowCount() {
-//			return data.size();
-//		}
-//
-//		@Override
-//		public Object getValueAt(int r, int c) {
-//			SimpleDateFormat df;
-//			String s = "";
-//			switch(c) {
-//			case 0:
-//				return data.get(r).getStateId();
-//			case 1:
-//				return data.get(r).getPriorityId();
-//			case 2:
-//				return data.get(r).getName();
-//			case 3:
-//				df = new SimpleDateFormat("yyyy-MM-dd");
-//				s = df.format(new Date(data.get(r).getExecute()));
-//				return s;
-//			}
-//			return data.get(r).getName();
-//		}
-		
 	}
 
 	/**

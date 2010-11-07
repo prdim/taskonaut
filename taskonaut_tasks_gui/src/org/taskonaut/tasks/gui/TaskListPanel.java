@@ -27,6 +27,7 @@ import org.taskonaut.api.tasks.ActiveTask;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.app.GuiConfig;
+import org.taskonaut.app.GuiDefaultSize;
 import org.taskonaut.app.MainApplication;
 import org.taskonaut.tasks.gui.internal.Activator;
 
@@ -47,6 +48,11 @@ public class TaskListPanel extends JPanelExt {
 	public TaskListPanel() {
 //		super();
 		initComponents();
+		if(GuiDefaultSize.getInstance().isFormStored("TaskListPanel")) {
+			contentPanel.setPreferredSize(GuiDefaultSize.getInstance().getDimensionForm("TaskListPanel"));
+		} else {
+			contentPanel.setPreferredSize(new Dimension(480, 240));
+		}
 		attachTableModel();
 		eventHandler = new ChangeTaskEventHandler();
 		Activator.regEventHandler(eventHandler, getHandlerServiceProperties("org/taskonaut/tasks/gui/events/*"));
@@ -196,24 +202,30 @@ public class TaskListPanel extends JPanelExt {
 		});
 	}
 	
-	private void attachTableModel() {
+	private synchronized void attachTableModel() {
 		// TODO Вылетает исключение при обновлении данных.
-		xTable1.setVisible(false);
-		xTable1.setModel(new DefaultTableModel());
-//		System.out.println("-1-");
-		TaskListTableModel t = new TaskListTableModel();
-//		System.out.println("-2-");
-		xTable1.setModel(t);
-//		System.out.println("-3-");
-		xTable1.getColumnModel().getColumn(0).setCellRenderer(new StatusCellRenderer());
-		xTable1.getColumnModel().getColumn(1).setCellRenderer(new PriorityCellRenderer());
-		xTable1.setColumnControlVisible(true);
-		xTable1.setRowHeight(22); // Подгоняем высоту строки под иконку
-		xTable1.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
-		xTable1.packAll();
-		xTable1.getColumnModel().getColumn(0).setPreferredWidth(24);
-		xTable1.getColumnModel().getColumn(1).setPreferredWidth(24);
-		xTable1.setVisible(true);
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				xTable1.setVisible(false);
+				xTable1.setModel(new DefaultTableModel());
+//				System.out.println("-1-");
+				TaskListTableModel t = new TaskListTableModel();
+//				System.out.println("-2-");
+				xTable1.setModel(t);
+//				System.out.println("-3-");
+				xTable1.getColumnModel().getColumn(0).setCellRenderer(new StatusCellRenderer());
+				xTable1.getColumnModel().getColumn(1).setCellRenderer(new PriorityCellRenderer());
+				xTable1.setColumnControlVisible(true);
+				xTable1.setRowHeight(22); // Подгоняем высоту строки под иконку
+				xTable1.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+				xTable1.packAll();
+				xTable1.getColumnModel().getColumn(0).setPreferredWidth(24);
+				xTable1.getColumnModel().getColumn(1).setPreferredWidth(24);
+				xTable1.setVisible(true);
+			}
+		});
 	}
 
 	/* (non-Javadoc)
@@ -230,6 +242,8 @@ public class TaskListPanel extends JPanelExt {
 	 */
 	@Override
 	public void beforeClose() {
+		GuiDefaultSize.getInstance().storeDimensionForm("TaskListPanel", contentPanel.getSize());
+		GuiDefaultSize.getInstance().save();
 		System.out.println("Close it");
 		Activator.unregEventHandler(eventHandler);
 	}

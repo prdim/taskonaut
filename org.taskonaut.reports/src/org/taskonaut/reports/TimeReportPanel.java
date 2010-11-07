@@ -14,6 +14,7 @@ import javax.swing.table.AbstractTableModel;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.api.tasks.TimeLogItem;
+import org.taskonaut.app.GuiDefaultSize;
 import org.taskonaut.app.MainApplication;
 import org.taskonaut.tasks.gui.EditTaskPanel;
 import org.taskonaut.tasks.gui.InternalFrameDialog;
@@ -33,6 +34,9 @@ public class TimeReportPanel extends JPanelExt {
     /** Creates new form TimeReportPanel */
     public TimeReportPanel() {
         initComponents();
+        if(GuiDefaultSize.getInstance().isFormStored("TimeReportPanel")) {
+			this.setPreferredSize(GuiDefaultSize.getInstance().getDimensionForm("TimeReportPanel"));
+		}
         date1.setDate(new Date(System.currentTimeMillis()));
         date2.setDate(new Date(System.currentTimeMillis() + 24*3600000));
         fillData();
@@ -335,8 +339,8 @@ public class TimeReportPanel extends JPanelExt {
 
 	@Override
 	public void beforeClose() {
-		// TODO Auto-generated method stub
-		
+		GuiDefaultSize.getInstance().storeDimensionForm("TimeReportPanel", this.getSize());
+		GuiDefaultSize.getInstance().save();
 	}
 
 }

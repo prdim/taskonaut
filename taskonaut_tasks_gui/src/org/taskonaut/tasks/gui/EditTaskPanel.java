@@ -10,6 +10,7 @@ import org.osgi.service.event.Event;
 import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.api.tasks.TimeLogItem;
+import org.taskonaut.app.GuiDefaultSize;
 import org.taskonaut.tasks.gui.internal.Activator;
 
 import java.awt.Dimension;
@@ -59,6 +60,9 @@ public class EditTaskPanel extends JPanelExt {
     public EditTaskPanel(TaskItem t, boolean isNew) {
     	this.isNew = isNew;
         initComponents();
+        if(GuiDefaultSize.getInstance().isFormStored("EditTaskPanel")) {
+			this.setPreferredSize(GuiDefaultSize.getInstance().getDimensionForm("EditTaskPanel"));
+		}
         this.t = t;
         fillData();
         
@@ -116,6 +120,8 @@ public class EditTaskPanel extends JPanelExt {
     
 	@Override
 	public void beforeClose() {
+		GuiDefaultSize.getInstance().storeDimensionForm("EditTaskPanel", this.getSize());
+		GuiDefaultSize.getInstance().save();
 //		System.out.println(typeBox.getHeight() + ":" + typeBox.getWidth());
 //        System.out.println(statusBox.getHeight() + ":" + statusBox.getWidth());
 //        System.out.println(priorityBox.getHeight() + ":" + priorityBox.getWidth());
