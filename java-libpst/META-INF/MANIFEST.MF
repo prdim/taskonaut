@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Java-libpst
+Bundle-SymbolicName: java-libpst
+Bundle-Version: 0.5.0
+Bundle-ClassPath: java-libpst.0.5.jar
+Bundle-Vendor: http://code.google.com/p/java-libpst/
+Export-Package: com.pff;version="0.5.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -93,4 +93,4 @@ Import-Package: javax.management,
  javax.swing.filechooser,
  javax.swing.table,
  javax.transaction.xa,
- org.apache.commons.logging;version="1.0.4"
+ org.apache.commons.logging
