@@ -11,6 +11,7 @@ import org.taskonaut.api.tasks.TaskItem;
 import org.taskonaut.api.tasks.TaskStoreServiceConnector;
 import org.taskonaut.api.tasks.TimeLogItem;
 import org.taskonaut.app.GuiDefaultSize;
+import org.taskonaut.app.MainApplication;
 import org.taskonaut.tasks.gui.internal.Activator;
 
 import java.awt.Dimension;
@@ -20,6 +21,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -148,6 +151,20 @@ public class EditTaskPanel extends JPanelExt {
         TimeTableModel m = new TimeTableModel();
         m.setData(TaskStoreServiceConnector.getStore().readTimeLogItems(t.getID()));
         xTable1.setModel(m);
+        if(t.getRelation_id() != 0) {
+        	final TaskItem tr = TaskStoreServiceConnector.getStore().readTask(t.getRelation_id());
+        	relationTask.setText(tr.getName());
+        	relationTask.setToolTipText(tr.getName());
+        	relationTask.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if(e.getClickCount()>=2) {
+						MainApplication.getInstance().getContext().getTaskService().
+							execute(new TaskEdit(MainApplication.getInstance(), tr));
+					}
+				}
+			});
+        }
     }
 
     /**
@@ -307,7 +324,8 @@ public class EditTaskPanel extends JPanelExt {
 		label6 = new JLabel();
 		typeBox = new JComboBox();
 		label7 = new JLabel();
-		relationTask = new JComboBox();
+//		relationTask = new JComboBox();
+		relationTask = new JTextField();
 		panel3 = new JPanel();
 		label8 = new JLabel();
 		priorityBox = new JComboBox();
@@ -402,7 +420,9 @@ public class EditTaskPanel extends JPanelExt {
 			panel2.add(label7, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 				new Insets(0, 0, 0, 5), 0, 0));
-			relationTask.addItem("Выбери задачу для перехода");
+//			relationTask.addItem("Выбери задачу для перехода");
+			relationTask.setEditable(false);
+			relationTask.setPreferredSize(new Dimension(250,25));
 			panel2.add(relationTask, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 				new Insets(0, 0, 0, 0), 0, 0));
@@ -455,7 +475,8 @@ public class EditTaskPanel extends JPanelExt {
 	private JLabel label6;
 	private JComboBox typeBox;
 	private JLabel label7;
-	private JComboBox relationTask;
+//	private JComboBox relationTask;
+	private JTextField relationTask;
 	private JPanel panel3;
 	private JLabel label8;
 	private JComboBox priorityBox;

@@ -56,7 +56,8 @@ public class GuiDefaultSize {
 	}
 	
 	public Dimension getDimensionForm(String formName) {
-		return new Dimension(getIntValue(formName + ".w"), getIntValue(formName + ".h"));
+		// TODO Почему возвращаемые размеры с каждым разом меньше на 7 пикселей?
+		return new Dimension(getIntValue(formName + ".w"), getIntValue(formName + ".h")+7);
 	}
 	
 	public void storeDimensionForm(String formName, Dimension d) {
@@ -69,10 +70,12 @@ public class GuiDefaultSize {
 	}
 	
 	private int getIntValue(String property) {
+		System.out.println(property + "=" + props.getProperty(property, "0"));
 		return Integer.parseInt(props.getProperty(property, "0"));
 	}
 	
 	private void setIntValue(String property, int value) {
+		System.out.println(property + "=" + value);
 		props.setProperty(property, Integer.toString(value));
 	}
 }
