@@ -9,8 +9,10 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.beanutils,
  org.jdesktop.application,
  org.osgi.framework;version="1.3.0",
- org.taskonaut.api
+ org.taskonaut.api,
+ org.taskonaut.api.tasks
 Bundle-ActivationPolicy: lazy
 Export-Package: org.taskonaut.test.actions,
  org.taskonaut.test.actions.resources
-Require-Bundle: org.eclipse.osgi
+Require-Bundle: org.eclipse.osgi,
+ ical4j;bundle-version="1.0.0"
